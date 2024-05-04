@@ -1,0 +1,62 @@
+import edu.ucdavis.jr.JR;
+
+public class prog {
+    static final int n = 10; 
+    static int cantEspearando;
+    static sem mutex = 1;
+    static sem silla = 0;
+    static sem espera = 1;
+    static sem cobrar = 0;
+    static sem pagar = 0;
+    static sem termino = 0;
+
+    
+    static process barberia{
+        while(true){
+            P(mutex);
+            if(cantEspearando==0){
+                V(mutex);
+                P(silla);//si no hay nadie, duermo, 0 a 0 duermo de 1 a 0 despierto   
+            }
+            else{
+                V(mutex);
+                P(termino);//hasta que no termine de cobrar no llamo al siguiente cliente
+                V(espera);//si hay alguien pasa el siguiente de la cola que contiene el semaforo espera 
+                //y despiesto al barbero    
+                P(silla);//esto sincroniza       
+            }
+            
+            System.out.println("Corto el cabello");//el barbero y el cliente estan sincronizados 
+
+            P(pagar);
+            V(cobrar);
+            System.out.println("Recibo dinero");
+        }
+    }
+    
+    static process cliente((int i = 0; i<5; i++)){
+           P(mutex);
+           cantEspearando += 1;//un cliente esta eperando  
+           V(mutex);
+
+           P(espera);
+           V(silla);//sincronizacion para cortar cabello  
+           System.out.println("Me Corta el cabello");
+
+           P(mutex);
+           cantEspearando -= 1;//un cliente siendo atendido  
+           V(mutex);
+
+           //sincronizacion para cobrar
+           V(pagar);
+           P(cobrar);
+           System.out.println("Dar dinero");
+           V(termino);
+    }
+
+
+    public static void main(String[] args){
+        cantEspearando = 0;  
+        prog p = new prog();
+    }
+}

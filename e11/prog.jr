@@ -1,0 +1,67 @@
+import edu.ucdavis.jr.JR;
+
+public class prog{
+
+    static sem A1,A2,A3 = 0; 
+    static sem chefEspera = 1;
+    static int cont = 0;
+
+    static process chef{
+        while(cont<20){
+            int ingrediente = (int) (Math.floor(Math.random() * (3 - 1 + 1)) + 1);
+            System.out.println("falta ingrediente "+ingrediente);
+            P(chefEspera);
+            switch(ingrediente){
+                case 1:V(A1);
+                    break;
+                case 2:V(A2);
+                    break;
+                case 3:V(A3);
+                    break;
+            }
+            cont++;
+        }
+    }
+
+    static process asistente1{
+        while(true){
+            P(A1);
+            System.out.println("agrego salsa");
+            V(chefEspera);
+        }
+    }
+
+    static process asistente2{
+        while(true){
+            P(A2);
+            System.out.println("agrego queso");
+            V(chefEspera);
+        }
+    }
+
+    static process asistente3{
+        while(true){
+            P(A3);
+            System.out.println("agrego morron");
+            V(chefEspera);
+        }
+    }
+
+    public static void main(String[] args){
+        try {
+			JR.registerQuiescenceAction(done);
+		} catch (edu.ucdavis.jr.QuiescenceRegistrationException e) {
+			//TODO: handle exception
+		}
+    }
+    private static op void done(){
+        System.out.println("pizzas terminadas: "+cont);
+    }
+
+
+
+
+
+
+
+}
