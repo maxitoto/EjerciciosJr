@@ -1,0 +1,69 @@
+import edu.ucdavis.jr.JR;
+public class ProdConsuBufferSimple{
+
+    private static sem depositado = 0;
+    private static sem recuperado = 1;
+
+    private static double buffer = 0.d;
+
+    private static op void pausa(int tiempo){
+        
+        try{
+                Thread.sleep(tiempo);
+        }catch(java.lang.Exception e){}
+
+    }
+
+    private static process Productor {
+        double elemento = 0; 
+        while(true){
+            
+            /*-- Genero un elemento --*/ 
+            elemento = Math.random() * 50 + 1;
+
+            /*-- Esperamos que el elemento sea recuperado por el consumidor--*/
+            //wait
+            P(recuperado);
+            
+            /*-- Lo depositamos en el buffer --*/ 
+            buffer = elemento;
+
+            System.out.println("Depositamos elemento:" + String.format("%.2f",elemento) + " en buffer ");    
+            call pausa(800);
+
+            /*-- Avisamos que fue depositado --*/ 
+            //signal
+            V(depositado);
+                  
+        }
+    }
+
+    private static process Consumidor{
+        
+        double elemRecuperado = 0;
+        
+        while(true){
+
+            /*--Esperamos que se deposite algun elemento para consumirlo  */
+            P(depositado);
+            
+            /*-- Recuperamos lo depositado--*/
+            elemRecuperado = buffer;
+
+            System.out.println("Recuperamos:  " + String.format("%.2f",elemRecuperado));
+            
+            call pausa(800);
+            
+            /* Avisamos que recuperamos el elemento */
+            V(recuperado);
+
+        }
+    }
+
+    public static void main(String[] args ) {
+
+        System.out.println("Productor-Consumidor Buffer Simple");
+    }
+
+
+}

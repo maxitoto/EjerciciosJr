@@ -1,0 +1,28 @@
+import edu.ucdavis.jr.JR;
+public class TwoProcesses
+{
+	private static final int [] A = {8, 4, 11, 19};
+	private static final int [] B = {14, 7, 9, 3};
+	private static final int N = A.length;
+	private static process p1
+	{
+		int sum = 0;
+		for (int i = 0; i < N; i++)
+		{
+			sum += A[i];
+		}
+		System.out.println("Sum of A is " + sum);
+	}
+	private static process p2
+        {
+                int sum = 0;
+                for (int i = 0; i < N; i++)
+                {
+                        sum += A[i] * B[i];
+                }
+                System.out.println("Inner product of A with B is " + sum);
+        }
+	public static void main (String [] args)
+	{
+	};
+}

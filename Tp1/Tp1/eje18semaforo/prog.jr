@@ -1,0 +1,55 @@
+import edu.ucdavis.jr.JR;
+import java.util.Random;
+
+public class prog{
+    public static final int N = 5;    
+    public static int[] buffer;
+    public static int frente = 0;
+    public static int cola = 0;
+    public static sem mutex = 1;//un procesos u otro
+    public static sem vacios = N;//todos estan vacios 
+    public static sem llenos = 0;//ninguno esta lleno
+    
+
+    public static op void espera(int t, int i){
+        try{
+            System.out.println("proceso" + i +" Esperando"); 
+            Thread.sleep(t);
+        }catch(Exception e){System.out.println("error");}
+    }
+
+    public static process consumidor{
+        int e;
+        while(true){
+            P(llenos);//comprueba que es distinto de cero, por lo menos hay un elemento para consumir
+                P(mutex);//me apodero del recurso compartido
+                e = buffer[cola];
+                cola = (cola % N);
+                System.out.println("Elemento consumido: "+ e);
+                V(mutex);//libero el recurso compartido
+            V(vacios);//incremento vacio, porque ha consumido un elemento
+            espera(0,2);
+        }
+    }
+
+    public static process productor{
+        int e;
+        while(true){
+            P(vacios);//comprueba que el buffer no esta lleno o tiene lugares vacios
+                P(mutex);//me apodero del buffer o Rcompartido  
+                e = (int)(Math.random()+100 / Math.random());
+                buffer[frente] = e;
+                frente = (frente % N);
+                System.out.println("elemento ingresado: "+ e);
+                V(mutex);//libero el recurso compartido Buffer
+            V(llenos);//incremento el semaforo lleno porque he ingresado un elemento  
+            espera(0,1);
+        }
+    }
+
+
+    public static void main(String [] args){
+        buffer = new int[N];
+        prog p = new prog();
+    }
+}

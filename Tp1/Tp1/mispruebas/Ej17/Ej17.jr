@@ -1,0 +1,58 @@
+import edu.ucdavis.jr.JR;
+import java.util.*;
+import java.lang.*;
+
+public class Ej17{
+    public static int[] lista = {21,532,12,5,64,2134,354,2315,65,346};
+    public static int max = -10000;
+    public static String quien = "Nadie";
+
+    static process p1{
+        int impar = lista.length;
+        if (impar % 2 == 0){
+            impar = impar - 1 ;
+        }
+
+        for(int i=1; i<impar; i=i+2){
+            System.out.println("Soy el proceso 1 y busco en el indice: "+i);
+            if (max<lista[i]){
+                max=lista[i];
+                quien="Lo encontro el proceso 1";
+            }
+            try{
+                Thread.sleep(2300);
+        }catch(java.lang.Exception e){}
+        }
+    }
+
+    static process p2 {
+        int par = lista.length;
+        if (par % 2 == 1) {
+            par = par - 1;
+        }
+    
+        for (int i = 0; i < par; i += 2) {
+            System.out.println("Soy el proceso 2 y busco en el indice: "+i);
+            if (max < lista[i]) {
+                max = lista[i];
+                quien = "Lo encontro el proceso 2";
+            }
+            try{
+                Thread.sleep(2300);
+        }catch(java.lang.Exception e){}
+        }
+    }
+
+
+    public static void main(String[] args){
+            try {
+                JR.registerQuiescenceAction(done);
+            } catch (edu.ucdavis.jr.QuiescenceRegistrationException e) {
+                //TODO: handle exception
+            }
+    }
+
+    private static op void done(){
+        System.out.println("Maximo valor: "+max+" quien lo encontro? "+quien);
+    }
+}

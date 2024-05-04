@@ -1,0 +1,45 @@
+import edu.ucdavis.jr.JR;
+import java.util.Random;
+
+public class prog{
+    static final int lim = 5; 
+    static int[] buffer;
+    static sem sp = 1;
+    static sem sc = 0;
+
+
+    public static op void espera(int t){
+        try{Thread.sleep(t);}catch(Exception e){}
+    }
+
+    public process productor((int i=1;i<lim;i++)){
+        while(true){
+            P(sc);
+            if(buffer[i]==0){//uso su id del procesos como indice
+                buffer[i]=(int)(Math.random()+100 / Math.random());
+                System.out.println("inserto buffer ["+i+"] ="+buffer[i]);
+            }
+            V(sp);
+            espera(12000);
+        }
+    }
+    
+    public process consumidor((int i=1;i<lim;i++)){
+        while(true){           
+            P(sp);
+            if(buffer[i]>0){
+                System.out.println("consumo buffer ["+i+"] ="+buffer[i]);
+                buffer[i]=0;    
+            }
+            V(sc);
+            espera(12000);
+        }
+    }
+
+
+    public static void main(String[] args){
+        buffer = new int[lim];
+        prog instancia = new prog();
+    }
+
+}

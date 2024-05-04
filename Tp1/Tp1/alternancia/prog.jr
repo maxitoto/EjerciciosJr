@@ -1,0 +1,29 @@
+import edu.ucdavis.jr.JR;
+
+public class prog{
+
+    public static int turno = 0;
+
+    public static process p1{
+        while(true){
+            while(turno == 0){
+                System.out.println("p1: ejecucion de seccion critica");
+                turno = 1;
+            }
+        }
+    }   
+
+    public static process p2{
+        while(true){
+            while(turno == 1){
+                System.out.println("p2: ejecucion de seccion critica");
+                turno = 0;
+            }
+        }
+    }
+
+    public static void main(String[] args){
+
+    }
+
+}

@@ -1,0 +1,62 @@
+import edu.ucdavis.jr.JR;
+import java.util.Random;
+
+public class prog{
+    public static final int N = 20;
+    public static boolean quiereentrar=true;
+    public static boolean restoproceso=false;
+    public static boolean c1,c2;
+    public static int[] buffer;
+    public static int elemnt;
+
+    public static op void esperar(int a){
+        try{Thread.sleep(a);}catch(Exception e){}
+    }
+
+    public static process consumidor{
+        while(true){        
+            c1 = quiereentrar;
+            while (c2 == quiereentrar){
+                c1 = restoproceso;
+                System.out.println("consumidor espera");
+                esperar(0);// solo funciona cuando esta en cero
+                c1 = quiereentrar;
+            }
+            //seccion critica
+            if(elemnt>-1){
+                System.out.println("Consumiendo: "+ buffer[elemnt]+" indice: "+elemnt);
+                elemnt-=1;
+            }
+            //
+            c1=restoproceso;
+            //--------
+        }
+    }
+
+    public static process productor{
+        while(true){
+            c2 = quiereentrar;
+            while (c1 == quiereentrar){
+                c2 = restoproceso;
+                System.out.println("productor espera");
+                esperar(0);// solo funciona cuando esta en cero
+                c2 = quiereentrar;
+            }
+            //seccion critica
+            if(elemnt<N-1){
+            elemnt+=1;
+            buffer[elemnt] = (int) (Math.random()+100 / Math.random());  
+            System.out.println("pruduzco "+buffer[elemnt]+ " indice: "+elemnt ); 
+            }    
+            //
+            c2=restoproceso;
+            //--------
+        }
+    }
+
+    public static void main(String [] args){
+        buffer = new int[N];
+        elemnt = -1;
+        prog instancia = new prog();
+    }
+}

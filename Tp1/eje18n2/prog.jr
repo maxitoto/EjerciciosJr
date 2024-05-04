@@ -1,0 +1,44 @@
+import edu.ucdavis.jr.JR;
+import java.util.Random;
+
+public class prog{
+    static int N = 20;
+    static int[] boffer = new int[N];
+    static int idx = -1;
+    static boolean flag = false;
+    static Random num = new Random();//clase random
+
+    public static process consumidor{
+        while(true){
+            while((flag) & (idx>=0)){            
+                System.out.println("Consumo: "+boffer[idx]+" inx: " + idx);
+                idx-=1;
+                flag=false;            
+                try{Thread.sleep(1800);}catch(Exception e){e.printStackTrace();}                      
+
+            }                 
+        }
+    }
+
+    public static process productor{
+       
+        while(true){                 
+            while(!(flag) & idx<N){
+                int recurso = num.nextInt(60);   
+                idx+=1;
+                boffer[idx]=recurso; 
+                System.out.println("Produzco: "+boffer[idx]+" inx: "+ idx);
+                flag=true;      
+                try{Thread.sleep(1800);}catch(Exception e){e.printStackTrace();}                      
+            }
+        }
+    }   
+    
+
+    public static void main(String[] args){
+
+    }
+
+
+
+}

@@ -1,0 +1,40 @@
+import edu.ucdavis.jr.JR;
+
+public class prog{
+
+    public static boolean quiereentrar=true;
+    public static boolean restoproceso=false;
+    public static boolean c1,c2;
+
+    public static process p1{
+        while(true){
+            c1 = quiereentrar;
+            while (c2 == quiereentrar){
+                c1 = restoproceso;
+                System.out.println("p1 espera 2s");
+                try{Thread.sleep(12000);}catch(Exception e){}
+                c1 = quiereentrar;
+            }
+            System.out.println("p1: ejecutando seccion critica");
+            c1=restoproceso;
+        }
+    }
+
+    public static process p2{
+        while(true){
+            c2 = quiereentrar;
+            while (c1 == quiereentrar){
+                c2 = restoproceso;
+                System.out.println("p2 espera 2s");
+                try{Thread.sleep(12000);}catch(Exception e){}
+                c2 = quiereentrar;
+            }
+            System.out.println("p2: ejecutando seccion critica");
+            c2=restoproceso;
+        }
+    }
+
+    public static void main(String[] args){}
+
+}
+

@@ -1,0 +1,35 @@
+import edu.ucdavis.jr.JR;
+
+public class prog{
+
+    public static boolean sclibre=true;
+    public static boolean scocupada=false;
+
+    public static boolean v = scocupada;
+
+    public static process p1{
+        while(true){    
+            while(v == scocupada){
+                v=scocupada;
+                System.out.println("p2: ejecucion de seccion critica");
+                v=sclibre;
+            }
+        }
+    }
+
+    public static process p2{
+        while(true){    
+            while(v == scocupada){
+                v=scocupada;
+                System.out.println("p2: ejecucion de seccion critica");
+                v=sclibre;
+            }
+        }
+    }
+
+
+    public static void main(String [] args){
+    }
+
+
+}

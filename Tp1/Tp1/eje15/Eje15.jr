@@ -1,0 +1,40 @@
+import edu.ucdavis.jr.JR;
+
+public class Eje15{
+    private static boolean puerta = true;
+    private static String recursocompartido = "RCompartido";
+    private static int interacion = 0;
+    
+    private static process p1{
+        while (!Eje15.puerta & Eje15.interacion<5){
+            if (Eje15.puerta){
+                Eje15.puerta=false;
+                Eje15.interacion+=1;
+                System.out.println("El procesos 1 esta usando el "+Eje15.recursocompartido);
+                Eje15.puerta=true;
+            }
+        }
+    }
+    private static process p2{
+        while (!Eje15.puerta & Eje15.interacion<5){
+            if (Eje15.puerta){
+                Eje15.puerta=false;
+                Eje15.interacion+=1;
+                System.out.println("El procesos 2 esta usando el "+Eje15.recursocompartido);
+                Eje15.puerta=true;
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        try {
+			JR.registerQuiescenceAction(done);
+		} catch (edu.ucdavis.jr.QuiescenceRegistrationException e) {
+			//TODO: handle exception
+		}
+    }
+    private static op void done(){
+        System.out.println("Resultado:");
+    }
+   
+}

@@ -1,0 +1,17 @@
+public class Procesos{
+
+    // declaracion mas simple de un proceso
+    process Hola{
+        System.out.println("Soy el proceso mas simple e instanciado y digo Hola!!");
+    }
+
+    //declaracion mas simple de un proceso de clase o estatico
+    static process HolaEstatico{
+        System.out.println("Soy el proceso mas simple estatico y digo antes que cualquier proceso no estatico Hola!!");
+    }
+        
+    public static void  main(String[] args){
+        Procesos prcs= new Procesos();
+        prcs.Hola;
+    }
+}

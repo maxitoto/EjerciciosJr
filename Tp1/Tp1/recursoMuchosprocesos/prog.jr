@@ -1,0 +1,48 @@
+import edu.ucdavis.jr.JR;
+import java.util.Random;
+public class prog{
+    static final int e = 10;
+    static final int l = 10;
+    static int buffersimple;
+    static int leyendo=0;
+    static sem estaescribiendo=1;
+    static sem escritor=1;
+
+    static op void espera(int t, int id, int LecOescr){
+        try{
+            System.out.println("El proceso "+ id +" espera para "+ (LecOescr==1?"escribir":"leer"));
+            Thread.sleep(t);
+        }catch(Exception e){}
+    }
+
+    static process lector((int i = 0; i<l; i++)){
+        while(true){
+            espera(5000,i,2);
+            P(estaescribiendo);//si no hay nadie escribiendo entro, si hay alguien escribiendo me bloqueo
+                leyendo+=1;//pude entrar entonces nadie escribe, por lo tanto estoy por leer
+                if(leyendo == 1){P(escritor);}//como estoy por leer y ademas soy el primero, impido que entre un escritor
+                V(estaescribiendo);//listo a partir de aqui no hay escritores, solo N cantidad de lectores
+
+                System.out.println("lector "+i+" lee buffer: "+buffersimple);//leyendo el buffer
+
+            P(estaescribiendo);//si no hay nadie escribiendo entro, si hay alguien escribiendo me bloqueo
+                leyendo-=1;//pude entrar entonces nadie escribe, por lo tanto dejo de leer
+                if(leyendo == 0){V(escritor);}//como dejo de leer y ademas soy el ultimo, dejo que entre un escritor
+                V(estaescribiendo);//a partir de aqui hay escritores pero no hay ningun lector
+            
+        }
+    }
+
+    static process escritor((int i = 0; i<e; i++)){
+        while(true){
+            espera(5000,i,1);
+            P(escritor);//bloqueo a otro escritor y a los lectores
+            buffersimple=(int)(Math.random()*100 / Math.random());//inserto un recurso al buffer
+            System.out.println("escritor "+i+" buffer: "+buffersimple);//----------
+            V(escritor);//termine de escribir y desbloquo a los lectores y otros escritores
+        }
+    }
+
+    public static void main(String [] args){
+    }
+}

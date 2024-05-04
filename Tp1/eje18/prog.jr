@@ -1,0 +1,33 @@
+import edu.ucdavis.jr.JR;
+import java.util.LinkedList;
+import java.util.Random;
+
+public class prog{
+    static LinkedList<Integer> boffer = new LinkedList();//creo una lista
+    static Random num = new Random();//clase random
+
+    public static process productor{//proceso 1
+        while(true){//while eterno
+            try{//intentar insertar, si no puedo genera excepcion
+                int recurso = num.nextInt(60);//genero un numero
+                boffer.offer(recurso);//inserto en cola
+                System.out.println("productor insert "+recurso);//imprimo lo insertado
+                try{Thread.sleep(800);}catch(Exception e){e.printStackTrace();}//espero 2s 
+            }catch(IllegalStateException e){e.printStackTrace();}
+        }
+    }
+
+    public static process consumidor{
+        while(true){
+            
+            while(!(boffer.isEmpty())){
+                System.out.println("consumidor use "+boffer.removeFirst());
+                try{Thread.sleep(900);}catch(Exception e){e.printStackTrace();}
+            }
+            
+        }
+    }
+
+    public static void main(String [] args){}
+
+}

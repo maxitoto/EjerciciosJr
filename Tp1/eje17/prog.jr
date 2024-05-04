@@ -1,0 +1,37 @@
+import edu.ucdavis.jr.JR;
+public class prog{
+    static int[] vector = {1,5,2,6,4,7,21,22};
+    //para no usar una variable o recurso compartido;region critica, creo dos variables de clase.
+    static int nump1 = -1000;
+    static int nump2 = -1000;
+    
+    public static process par{
+        for(int i=0;i<vector.length;i+=2){
+            System.out.println("p1 indx "+i);
+            if(nump1<vector[i]){
+                try{Thread.sleep(1500);}catch(Exception e){}
+                nump1=vector[i];
+            }
+        }
+    }
+
+    public static process impar{
+        for(int i=1;i<vector.length;i+=2){
+            System.out.println("p2 indx "+i);
+            if(nump2<vector[i]){
+                try{Thread.sleep(1500);}catch(Exception e){}
+                nump2=vector[i];
+            }   
+        }
+    }
+
+    public static void main(String[] args){    
+        try{JR.registerQuiescenceAction(mostrar);
+        } catch (Exception e){System.out.println("Error");}
+
+    }
+
+    private static op void mostrar(){
+        System.out.println("Max elemnt "+(nump1>=nump2?nump1:nump2));
+    }
+}
