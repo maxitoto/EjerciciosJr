@@ -1,0 +1,46 @@
+import edu.ucdavis.jr.JR;
+
+public class prog {
+    static sem term1 = 2; //DOS PROCESOS ESPERAN A UNO
+    static sem term2, term3, term4, term2y4 = 0; 
+
+    static process t1{
+        System.out.println("Tarea 1 iniciada");
+        V(term1);
+    }
+
+    static process t2{
+        P(term1);
+        System.out.println("Tarea 1 finalizada");
+        System.out.println("Tarea 2 iniciada");
+        System.out.println("esperando tarea 4");
+        V(term2);
+        P(term4);
+        V(term2y4);
+    }
+
+    static process t3{
+        P(term1);
+        System.out.println("Tarea 1 finalizada");
+        System.out.println("Tarea 3 iniciada");
+        V(term3);
+    }
+
+    static process t4{
+        P(term3);
+        System.out.println("Tarea 3 finalizada");
+        System.out.println("Tarea 4 iniciada");
+        System.out.println("esperando tarea 2");
+        P(term2);
+        V(term4);
+    }
+
+    static process t5{
+        P(term2y4);
+        System.out.println("Tarea 2 y 4 finalizada");
+        System.out.println("Tarea 5 iniciada");
+        System.out.println("Tarea 5 FINALIZADA");
+    }
+
+    public static void main(String[] args){}
+}

@@ -1,0 +1,45 @@
+import edu.ucdavis.jr.JR;
+
+public class prog {
+    private static int semaphore;
+
+    public static op void w(String p) {
+        while (semaphore == 0) {
+            System.out.println("espera activa "+p);
+        }
+        semaphore = 0;
+    }
+
+    public static op void s() {
+        semaphore = 1;
+    }
+
+
+    public static op void espera(int t){
+        try{Thread.sleep(t);}catch(Exception e){}
+    }
+
+    static process p1{
+        while(true){
+        w("p1");
+        System.out.println("p1 en seccion critica");
+        s();
+        espera(2000);
+        }
+    }
+
+    static process p2{
+        while(true){
+        w("p2");
+        System.out.println("p2 en seccion critica");
+        s();
+        espera(2000);
+        }
+    }
+
+    public static void main(String[] args){
+        semaphore = 1;
+        prog bs = new prog();
+        // Aqui puedes probar las operaciones P() y V()
+    }
+}

@@ -1,0 +1,41 @@
+import edu.ucdavis.jr.JR;
+
+public class prog {
+    private static int semaphore = 1;
+    private static sem mutex = 1;
+    
+
+    public static op void w(int p) {
+        P(mutex); //traba el segundo proceso
+        if (semaphore == 1) {
+            semaphore = 0;
+            System.out.println("puede entrar "+p);
+        }      
+    }
+
+    public static op void s(int p){
+        semaphore = 1;
+        System.out.println("Desbloqueo "+p);  
+        V(mutex);
+    }
+
+
+    public static op void espera(int t){
+        try{Thread.sleep(t);}catch(Exception e){}
+    }
+
+    static process p((int i = 0; i<20; i++)){
+        while(true){
+        w(i);
+        System.out.println("p"+i+" en seccion critica ");
+        espera(1000);
+        s(i); 
+        espera(0);
+        }
+    }
+
+    
+    public static void main(String[] args){
+    }
+}
+

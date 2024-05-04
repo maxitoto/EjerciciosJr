@@ -1,0 +1,51 @@
+import edu.ucdavis.jr.JR;
+
+public class prog{
+    static int productores = 5; 
+    static int consumidores = 9; 
+    static final int n = 10;
+    static int[] bufferL;
+    static int cola = 0; 
+    static int frente = 0;
+    static sem x = 1;
+    static sem llenos = 0;
+    static sem vacios = n;
+
+    static op void espera(int t){
+        try{Thread.sleep(t);}
+        catch(Exception e){}
+    }
+
+    static process productor((int i = 0; i<productores; i++)){
+        while(true){
+            int e = (int)(Math.random()*100 / Math.random());
+            P(vacios);
+            P(x);
+                bufferL[frente] = e;
+                System.out.println("productor " + i + " produce: "+e);
+                frente=((frente+1) % n);
+            V(x);
+            V(llenos);
+            espera(0);
+        }
+    }
+
+    static process consumidor((int i = 0; i<consumidores; i++)){
+        while(true){
+            P(llenos);
+            P(x);
+                int e = bufferL[cola];
+                cola=((cola+1) % n);          
+            V(x);
+            V(vacios);
+            System.out.println("consumidor " + i + " consume: "+e);
+            espera(0);
+        }
+    }
+
+
+    public static void main(String[] args){
+        bufferL = new int[n];
+        prog p = new prog();
+    }
+}
