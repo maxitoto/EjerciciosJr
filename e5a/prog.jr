@@ -1,0 +1,45 @@
+import edu.ucdavis.jr.JR;
+
+public class prog{
+    static int[] bufferS;
+    static int idx;
+    static sem x = 1;
+
+    static op void espera(int t){
+        try{
+            Thread.sleep(t);
+        }catch(Exception e){}
+    }
+
+    static process productor{
+        while(true){
+            P(x);
+            if(idx==-1){
+                idx=0;
+                bufferS[idx]=(int)(Math.random()*100 / Math.random());
+                System.out.println("BufferS: "+bufferS[idx]);
+            }
+            V(x);
+            espera(2000);
+        }
+    }
+
+
+    static process consumidor{
+        while(true){
+            P(x);
+            if(idx==0){
+                System.out.println("Consumo: "+bufferS[idx]);
+                idx=-1;               
+            }
+            V(x);
+            espera(2000);
+        }
+    }
+
+    public static void main(String[] args){
+        bufferS = new int [1];
+        idx=-1;
+        prog p = new prog();
+    }
+}

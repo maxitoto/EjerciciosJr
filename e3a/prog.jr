@@ -1,0 +1,55 @@
+import edu.ucdavis.jr.JR;
+
+public class prog{
+    static int s1 = 1;
+    static int s2 = 1;
+    
+
+    static op void espera(int t){
+        try{Thread.sleep(t);}
+        catch(Exception e){}
+    }
+
+
+    static void weit(int x){
+        while(x<=0){
+            espera(2000);
+            System.out.println("Proceso Esperando");
+        }
+        x-=1;
+        System.out.println("seccion critica aviso wait");
+    }
+    
+    static void sicnal(int x){
+        x+=1;
+        System.out.println("seccion no critica aviso signal");
+    }
+
+    static int rc = 0;
+
+    static process p1{
+        while(true){
+            weit(s1);
+            System.out.println("seccion critica de p1");
+            espera(100);
+            sicnal(s2);
+        }
+    }
+
+
+    static process p2{
+        while(true){
+            weit(s2);    
+            System.out.println("seccion critica de p2");
+            espera(100);
+            sicnal(s1);
+        }
+    }
+
+    public static void main(String[] args){}
+
+
+
+
+
+}

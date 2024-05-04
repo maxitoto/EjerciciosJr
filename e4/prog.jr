@@ -1,0 +1,64 @@
+import edu.ucdavis.jr.JR;
+
+public class prog{
+
+    static int m = 0;
+    static sem x = 1;
+
+    static op void espera(int t){
+        try{Thread.sleep(t);}
+        catch(Exception e){}
+    }
+
+/*     
+del libro test and set sin semaforos
+    static op boolean testandset(int m){
+        if(m == 0){
+            m = 1; 
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+*/    
+
+// test and set con semaforo 
+    static op boolean testandset(int m){
+        P(x);
+        if(m==0){
+            m=1; 
+            V(x); 
+            return true; }
+        else{
+            V(x);
+            return false;
+        }
+        
+    }
+
+
+    static process p1{
+        while(true){
+        while(!testandset(m));
+        System.out.println("Seccion critica p1");
+        m=0;
+        System.out.println("p1 hago otra cosa");
+        espera(2000);
+        }
+    }
+
+
+    static process p2{
+        while(true){
+        while(!testandset(m));
+        System.out.println("Seccion critica p2");
+        m=0;
+        System.out.println("p2 hago otra cosa");
+        espera(2000);
+        }
+    }
+
+
+    public static void main(String[] args){}
+}
