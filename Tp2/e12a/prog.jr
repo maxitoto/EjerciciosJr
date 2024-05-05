@@ -1,0 +1,76 @@
+import edu.ucdavis.jr.JR;
+import java.util.Random;
+
+        
+public class prog {
+    static Random random;
+    static boolean vulnerable;
+    static final int n = 50;//numero de Blancos
+    static final int m = 25;//numero de Rojos
+    static sem esperaB = 0;//sincronizacion con los rojos
+    static sem esperaR = 0;//sincronizacion con los blancos
+    static sem bloquear = 0;//Bloquear procesos que hacen precencia
+    static sem morir = 0;//el huesped espera su muerte
+
+    static int cantB;
+    static sem mutexB = 4;
+
+    static int cantR;
+    static sem mutexR = 2;
+
+    static process X{
+        while(!(vulnerable)){
+            vulnerable = random.nextBoolean();
+            System.out.println("No soy vulnerable");
+        }
+        System.out.println("Soy vulnerable");
+
+        P(morir);
+        System.out.println("Huesped X murio");
+    }
+
+    static process blanco((int i = 0; i<n; i++)){
+        while(true){       
+            if(vulnerable){//espero a que sea vulnerable para atacar de forma simultanea
+                P(mutexB);//pasan solo los 4 primero los demas se bloquean
+                    cantB+=1;
+                    if(cantB==4){
+                        System.out.println("Soy Blanco n"+cantB+" id "+i+" y desbloqueo a los rojos que me esperan");
+                        V(esperaB);//Sincronizo con los Rojos
+                        P(esperaR);
+                        V(morir);//matamos al huesped los rojos y los blancos
+                    }
+                    else{
+                        System.out.println("Soy Blanco n"+cantB+" id "+i+" me bloqueo");
+                        P(bloquear);//hago presencia incrementando cantB y me bloqueo
+                    }
+            }   
+        }
+    }
+
+    static process rojo((int i = 0; i<m; i++)){
+        while(true){
+            if(vulnerable){//espero a que sea vulnerable para atacar de forma simultanea
+                P(mutexR);//pasan solo los 2 primero los demas se bloquean
+                    cantR+=1;
+                    if(cantR==2){
+                        System.out.println("Soy Rojo n"+cantR+" id "+i+" y desbloqueo a los blancos que me esperan");
+                        V(esperaR);//sincronizo con los Blancos
+                        P(esperaB);
+                    }
+                    else{
+                        System.out.println("Soy Rojo n"+cantR+" id "+i+" me bloqueo");
+                        P(bloquear);//hago presencia incrementando cantR y me bloqueo
+                    }
+            }
+        }
+    }
+
+    public static void main(String[] args){
+        random = new Random();
+        vulnerable = random.nextBoolean();
+        cantB = 0;
+        cantR = 0;
+        prog p = new prog();
+    }
+}
