@@ -1,0 +1,74 @@
+import edu.ucdavis.jr.JR;
+import java.util.Random;
+
+        
+public class prog {
+    static Random random;
+    static boolean vulnerable;
+    static final int n = 50;
+    static final int m = 35;
+    static sem bloquear = 0;
+    static sem B = 2;
+    static sem R = 1;
+    //static sem mutexR = 1; no hace falta, porque "a lo sumo uno a la vez"
+    static sem mutexB = 1;
+    static int blancas = 0;
+    static int rojas = 0;
+    static sem atacanBlanco = 0;
+    static sem atacanRojo = 0;
+
+
+    static process X{
+        while(!(vulnerable)){
+            vulnerable = random.nextBoolean();
+            System.out.println("No soy vulnerable");
+        }
+        System.out.println("Soy vulnerable");
+
+        //matan de forma precisa, cuando lo atacan exactamente 2 rojas y 4 blancas
+        P(atacanBlanco);
+        P(atacanRojo);
+
+        System.out.println("Huesped X murio");
+    }
+
+    static process blanco((int i = 0; i<n; i++)){
+        while(true){       
+            if(vulnerable){
+                P(B);//pasan 2 a la vez y traban
+                P(mutexB);//muteo para que sumen de a una
+                blancas+=1;
+                if(blancas==4){
+                    V(mutexB);
+                    V(atacanBlanco);
+                }
+                else{
+                    V(B);
+                    V(B);
+                    V(mutexB);//dos se preparan para entrar a la vez y luego intentan sumar de a uno
+                }
+            } 
+        }
+    }
+
+    static process rojo((int i = 0; i<m; i++)){
+        while(true){
+            if(vulnerable){
+                P(R);//pasa una a la vez y traba
+                rojas+=1;
+                if(rojas==2){
+                    V(R);
+                    V(atacanRojo);
+                }else{
+                    V(R);
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args){
+        random = new Random();
+        vulnerable = random.nextBoolean();
+        prog p = new prog();
+    }
+}
