@@ -1,62 +1,59 @@
 import edu.ucdavis.jr.JR;
-import java.util.Random;
-
-        
-public class prog{
-    static Random r;
-    static final int n = 5;
-    static final int m = 15;
-
+//inserto cambio
+public class prog {
     static final int l = 10;
-    static int[] buffer;
+    static final int n = 8;
+    static final int m = 8;
+    static int[] fichero;//recurso compartido
 
-    static sem escritores = 1;//para que escriba un escritor a la vez 
-    static sem escribir = 0;//para que el escritor que quiera escribir espere a que no este nadie leyendo
-    static int escribiendo = 0;//para contar los escritores 1/0
+    static boolean quieroescribir = false;
+    static boolean escribiendo = false;
+    static sem escritores = 1;
 
-    static sem lectores = 1;//para quese cuenten los lectores
-    static int leyendo = 0;//para contar los lectores
+    static sem mutex = 1;
 
     static op void espera(int t){
-        try{Thread.sleep(t);}catch(Exception e){}
+        try{
+            Thread.sleep(t);
+        }catch(Exception e){}
     }
 
-    static process E((int i = 0; i<n; i++)){
+    static process e((int i = 0; i<n; i++)){
         while(true){
+            P(mutex);
+                quieroescribir = true;
+            V(mutex);
+
             P(escritores);
-                escribiendo = 1;
-                P(escribir);
-                    int idx = (int)(Math.random()*l);
-                    buffer[idx] = (int)(Math.random()*100 / Math.random());
-                    System.out.println("P"+i+" escibiendo "+buffer[idx]+" en pos "+idx);
-                    escribiendo = 0;
+                escribiendo = true;
+                int idx = (int)(Math.random()*n);
+                fichero[idx] = (int)(Math.random()*100 / Math.random());
+                System.out.println("Escritor "+i+" escribe "+fichero[idx]+" en pos "+idx);
+
+                P(mutex);
+                    quieroescribir = false;
+                V(mutex);
+
+                escribiendo = false;
             V(escritores);
         }
     }
 
-    static process L((int i = 0; i<m; i++)){
+    static process l((int i = 0; i<m; i++)){
         while(true){
-            if(!(escribiendo == 0)){
-                P(lectores);
-                    leyendo +=1;
-                V(lectores);
-                int idx = (int)(Math.random()*l);
-                System.out.println("P"+i+" leyendo "+buffer[idx]+" en pos "+idx);
-                P(lectores);
-                    leyendo -=1;
-                    if(leyendo == 0){
-                        V(escribir);
-                    }
-                V(lectores);
-                espera(2000);
-                
-            }
+            P(mutex);
+                if(!(quieroescribir) & !(escribiendo)){
+                    V(mutex);
+                    int idx = (int)(Math.random()*n);
+                    System.out.println("Lector "+i+" lee "+fichero[idx]+" en pos "+idx);
+                }else{
+                    V(mutex);
+                }
         }
     }
 
     public static void main(String[] args){
-        buffer = new int[l];
-        r = new Random();
+        fichero = new int[n];
         prog p = new prog();
     }
 }

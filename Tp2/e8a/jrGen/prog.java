@@ -7,6 +7,8 @@ import java.rmi.*;
 import java.io.Serializable;
 
 
+import java.util.Random;
+
 public class prog extends java.lang.Object {
     { JRinit(); }
     
@@ -15,49 +17,11 @@ public class prog extends java.lang.Object {
         super();
         JRprocess();
     }
-    static final int n = 10;
-    static final int cantlector = 8;
-    static final int cantescritor = 2;
-    static int[] fichero;
-    static int cont = 0;
-    static Op_ext.JRProxyOp JRget_op_escritor_voidTovoid()
-    {
-        return op_escritor_voidTovoid;
-    }
-    
-    public static Op_ext.JRProxyOp op_escritor_voidTovoid;
-    ;
-    static    {
-        try    {
-            op_escritor_voidTovoid = new Op_ext_.JRProxyOp(new InOp_ext_impl());
-            {
-                long JRTotal = 1;
-                if (JRTotal < 0) throw new jrRuntimeError("op initialized with a negative value");
-                for (long JRiter = 0; JRiter < JRTotal; JRiter++)
-                    op_escritor_voidTovoid.send(jrvm.getTimestamp(), (java.lang.Object []) null);
-            }
-        } catch (Exception e) { throw new jrRuntimeError(e.toString());}
-    }
-    
-    static Op_ext.JRProxyOp JRget_op_lectores_voidTovoid()
-    {
-        return op_lectores_voidTovoid;
-    }
-    
-    public static Op_ext.JRProxyOp op_lectores_voidTovoid;
-    ;
-    static    {
-        try    {
-            op_lectores_voidTovoid = new Op_ext_.JRProxyOp(new InOp_ext_impl());
-            {
-                long JRTotal = 0;
-                if (JRTotal < 0) throw new jrRuntimeError("op initialized with a negative value");
-                for (long JRiter = 0; JRiter < JRTotal; JRiter++)
-                    op_lectores_voidTovoid.send(jrvm.getTimestamp(), (java.lang.Object []) null);
-            }
-        } catch (Exception e) { throw new jrRuntimeError(e.toString());}
-    }
-    
+    static Random r;
+    static final int n = 8;
+    static final int m = 8;
+    static final int l = 10;
+    static int[] buffer;
     static Op_ext.JRProxyOp JRget_op_escritores_voidTovoid()
     {
         return op_escritores_voidTovoid;
@@ -69,7 +33,7 @@ public class prog extends java.lang.Object {
         try    {
             op_escritores_voidTovoid = new Op_ext_.JRProxyOp(new InOp_ext_impl());
             {
-                long JRTotal = cantlector;
+                long JRTotal = 1;
                 if (JRTotal < 0) throw new jrRuntimeError("op initialized with a negative value");
                 for (long JRiter = 0; JRiter < JRTotal; JRiter++)
                     op_escritores_voidTovoid.send(jrvm.getTimestamp(), (java.lang.Object []) null);
@@ -77,25 +41,26 @@ public class prog extends java.lang.Object {
         } catch (Exception e) { throw new jrRuntimeError(e.toString());}
     }
     
-    static Op_ext.JRProxyOp JRget_op_lector_voidTovoid()
+    static Op_ext.JRProxyOp JRget_op_escribir_voidTovoid()
     {
-        return op_lector_voidTovoid;
+        return op_escribir_voidTovoid;
     }
     
-    public static Op_ext.JRProxyOp op_lector_voidTovoid;
+    public static Op_ext.JRProxyOp op_escribir_voidTovoid;
     ;
     static    {
         try    {
-            op_lector_voidTovoid = new Op_ext_.JRProxyOp(new InOp_ext_impl());
+            op_escribir_voidTovoid = new Op_ext_.JRProxyOp(new InOp_ext_impl());
             {
-                long JRTotal = 1;
+                long JRTotal = 0;
                 if (JRTotal < 0) throw new jrRuntimeError("op initialized with a negative value");
                 for (long JRiter = 0; JRiter < JRTotal; JRiter++)
-                    op_lector_voidTovoid.send(jrvm.getTimestamp(), (java.lang.Object []) null);
+                    op_escribir_voidTovoid.send(jrvm.getTimestamp(), (java.lang.Object []) null);
             }
         } catch (Exception e) { throw new jrRuntimeError(e.toString());}
     }
     
+    static int escribiendo = 0;
     static Op_ext.JRProxyOp JRget_op_mutex_voidTovoid()
     {
         return op_mutex_voidTovoid;
@@ -115,7 +80,26 @@ public class prog extends java.lang.Object {
         } catch (Exception e) { throw new jrRuntimeError(e.toString());}
     }
     
-    static int escritoresEsperando = 0;
+    static Op_ext.JRProxyOp JRget_op_lectores_voidTovoid()
+    {
+        return op_lectores_voidTovoid;
+    }
+    
+    public static Op_ext.JRProxyOp op_lectores_voidTovoid;
+    ;
+    static    {
+        try    {
+            op_lectores_voidTovoid = new Op_ext_.JRProxyOp(new InOp_ext_impl());
+            {
+                long JRTotal = 1;
+                if (JRTotal < 0) throw new jrRuntimeError("op initialized with a negative value");
+                for (long JRiter = 0; JRiter < JRTotal; JRiter++)
+                    op_lectores_voidTovoid.send(jrvm.getTimestamp(), (java.lang.Object []) null);
+            }
+        } catch (Exception e) { throw new jrRuntimeError(e.toString());}
+    }
+    
+    static int leyendo = 0;
     
     static void esperaintTovoid(java.lang.Object [] JRargs) {
         ((Op_ext_.JRProxyOp)op_espera_intTovoid).call(jrvm.getTimestamp(), JRargs);
@@ -307,15 +291,15 @@ return null;
         } catch (Exception e) { throw new jrRuntimeError(e.toString());}
     }
     
-    static Op_ext.JRProxyOp JRget_op_e_intTovoid()
+    static Op_ext.JRProxyOp JRget_op_E_intTovoid()
     {
-        return op_e_intTovoid;
+        return op_E_intTovoid;
     }
     
-    public static Op_ext.JRProxyOp op_e_intTovoid;
-    static class ProcOp_intTovoid_imple extends ProcOp_ext_impl
+    public static Op_ext.JRProxyOp op_E_intTovoid;
+    static class ProcOp_intTovoid_implE extends ProcOp_ext_impl
     {
-        public ProcOp_intTovoid_imple(prog thisIn) throws RemoteException
+        public ProcOp_intTovoid_implE(prog thisIn) throws RemoteException
         {
         }
         public java.lang.Object call(long JRtimestamp, java.lang.Object [] JRargs) throws RemoteException
@@ -323,7 +307,7 @@ return null;
             jrvm.ariseAndReceive();  // from caller
             try    {
                 jrvm.setTimestamp(JRtimestamp);
-                prog.eintTovoid(null, null, null, JRargs);
+                prog.EintTovoid(null, null, null, JRargs);
 return null;
             } finally {
                 jrvm.sendAndDie();    // to caller
@@ -352,7 +336,7 @@ return null;
             public void run()
             {
                 try    {
-                    prog.eintTovoid(this.retOp, this.fretOp, this.handler, this.JRargs);
+                    prog.EintTovoid(this.retOp, this.fretOp, this.handler, this.JRargs);
                 } catch (Exception e) {/* should be safe to ignore this exception */}
                 jrvm.threadDeath();
             }
@@ -444,14 +428,14 @@ return null;
     ;
     static    {
         try    {
-            op_e_intTovoid = new Op_ext_.JRProxyOp(new ProcOp_intTovoid_imple(null));
+            op_E_intTovoid = new Op_ext_.JRProxyOp(new ProcOp_intTovoid_implE(null));
         } catch (Exception e) { throw new jrRuntimeError(e.toString());}
     }
     
-    static void eintTovoid(java.lang.Object [] JRargs) {
-        ((Op_ext_.JRProxyOp)op_e_intTovoid).call(jrvm.getTimestamp(), JRargs);
+    static void EintTovoid(java.lang.Object [] JRargs) {
+        ((Op_ext_.JRProxyOp)op_E_intTovoid).call(jrvm.getTimestamp(), JRargs);
     }
-    private static void eintTovoid(Op_ext.JRProxyOp retOp, Cap_ext fretOp, edu.ucdavis.jr.RemoteHandler handler, java.lang.Object [] JRargs)
+    private static void EintTovoid(Op_ext.JRProxyOp retOp, Cap_ext fretOp, edu.ucdavis.jr.RemoteHandler handler, java.lang.Object [] JRargs)
     {
         try    {
             // GetMethod 1
@@ -460,41 +444,44 @@ return null;
                 JRLoop0: while (true) {
                     {
                         jrvm.sendAndDie();
+                        Recv_ext recv_voidTovoid = JRget_op_escritores_voidTovoid().recv();
+                        jrvm.ariseAndReceive();
+                        if (recv_voidTovoid.retOp != null)
+                            recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
+                    }
+                    {
+                        jrvm.sendAndDie();
                         Recv_ext recv_voidTovoid = JRget_op_mutex_voidTovoid().recv();
                         jrvm.ariseAndReceive();
                         if (recv_voidTovoid.retOp != null)
                             recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
                     }
                     // Begin Expr2
-                    escritoresEsperando += 1;
-                    if (cont > 0 || escritoresEsperando > 1) {
-                        JRget_op_mutex_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
-                        {
-                            jrvm.sendAndDie();
-                            Recv_ext recv_voidTovoid = JRget_op_escritor_voidTovoid().recv();
-                            jrvm.ariseAndReceive();
-                            if (recv_voidTovoid.retOp != null)
-                                recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
-                        }
-                        {
-                            jrvm.sendAndDie();
-                            Recv_ext recv_voidTovoid = JRget_op_mutex_voidTovoid().recv();
-                            jrvm.ariseAndReceive();
-                            if (recv_voidTovoid.retOp != null)
-                                recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
-                        }
+                    escribiendo = 1;
+                    JRget_op_mutex_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
+                    {
+                        jrvm.sendAndDie();
+                        Recv_ext recv_voidTovoid = JRget_op_escribir_voidTovoid().recv();
+                        jrvm.ariseAndReceive();
+                        if (recv_voidTovoid.retOp != null)
+                            recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
+                    }
+                    int idx = ((int)(Math.random() * l));
+                    // Begin Expr2
+                    buffer[idx] = ((int)(Math.random() * 100 / Math.random()));
+                    // Begin Expr2
+                    System.out.println("P" + i + " escibiendo " + buffer[idx] + " en pos " + idx);
+                    {
+                        jrvm.sendAndDie();
+                        Recv_ext recv_voidTovoid = JRget_op_mutex_voidTovoid().recv();
+                        jrvm.ariseAndReceive();
+                        if (recv_voidTovoid.retOp != null)
+                            recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
                     }
                     // Begin Expr2
-                    escritoresEsperando -= 1;
+                    escribiendo = 0;
                     JRget_op_mutex_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
-                    int idx = ((int)(Math.random() * n));
-                    // Begin Expr2
-                    fichero[idx] = ((int)(Math.random() * 100 / Math.random()));
-                    // Begin Expr2
-                    System.out.println("Escritor " + i + " inserto " + fichero[idx] + " en " + idx);
-                    JRget_op_escritor_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
-                    // Begin Expr2
-                    (new Cap_ext_(JRget_op_espera_intTovoid(), "void")).call(jrvm.getTimestamp(), new java.lang.Object [] {2000});
+                    JRget_op_escritores_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                 }
             }
         } catch (Exception JRe)    {
@@ -527,21 +514,21 @@ return null;
     }
     static {
         try {
-            for (int i = 0; i < cantescritor; i++) {
-                op_e_intTovoid.send(jrvm.getTimestamp(), new java.lang.Object [] {i});
+            for (int i = 0; i < n; i++) {
+                op_E_intTovoid.send(jrvm.getTimestamp(), new java.lang.Object [] {i});
             }
         } catch (Exception JRe) { throw new jrRuntimeError(JRe.toString()); }
     };
     
-    static Op_ext.JRProxyOp JRget_op_l_intTovoid()
+    static Op_ext.JRProxyOp JRget_op_L_intTovoid()
     {
-        return op_l_intTovoid;
+        return op_L_intTovoid;
     }
     
-    public static Op_ext.JRProxyOp op_l_intTovoid;
-    static class ProcOp_intTovoid_impll extends ProcOp_ext_impl
+    public static Op_ext.JRProxyOp op_L_intTovoid;
+    static class ProcOp_intTovoid_implL extends ProcOp_ext_impl
     {
-        public ProcOp_intTovoid_impll(prog thisIn) throws RemoteException
+        public ProcOp_intTovoid_implL(prog thisIn) throws RemoteException
         {
         }
         public java.lang.Object call(long JRtimestamp, java.lang.Object [] JRargs) throws RemoteException
@@ -549,7 +536,7 @@ return null;
             jrvm.ariseAndReceive();  // from caller
             try    {
                 jrvm.setTimestamp(JRtimestamp);
-                prog.lintTovoid(null, null, null, JRargs);
+                prog.LintTovoid(null, null, null, JRargs);
 return null;
             } finally {
                 jrvm.sendAndDie();    // to caller
@@ -578,7 +565,7 @@ return null;
             public void run()
             {
                 try    {
-                    prog.lintTovoid(this.retOp, this.fretOp, this.handler, this.JRargs);
+                    prog.LintTovoid(this.retOp, this.fretOp, this.handler, this.JRargs);
                 } catch (Exception e) {/* should be safe to ignore this exception */}
                 jrvm.threadDeath();
             }
@@ -670,14 +657,14 @@ return null;
     ;
     static    {
         try    {
-            op_l_intTovoid = new Op_ext_.JRProxyOp(new ProcOp_intTovoid_impll(null));
+            op_L_intTovoid = new Op_ext_.JRProxyOp(new ProcOp_intTovoid_implL(null));
         } catch (Exception e) { throw new jrRuntimeError(e.toString());}
     }
     
-    static void lintTovoid(java.lang.Object [] JRargs) {
-        ((Op_ext_.JRProxyOp)op_l_intTovoid).call(jrvm.getTimestamp(), JRargs);
+    static void LintTovoid(java.lang.Object [] JRargs) {
+        ((Op_ext_.JRProxyOp)op_L_intTovoid).call(jrvm.getTimestamp(), JRargs);
     }
-    private static void lintTovoid(Op_ext.JRProxyOp retOp, Cap_ext fretOp, edu.ucdavis.jr.RemoteHandler handler, java.lang.Object [] JRargs)
+    private static void LintTovoid(Op_ext.JRProxyOp retOp, Cap_ext fretOp, edu.ucdavis.jr.RemoteHandler handler, java.lang.Object [] JRargs)
     {
         try    {
             // GetMethod 1
@@ -691,7 +678,7 @@ return null;
                         if (recv_voidTovoid.retOp != null)
                             recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
                     }
-                    if (escritoresEsperando > 0) {
+                    if (!(escribiendo == 0)) {
                         JRget_op_mutex_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                         {
                             jrvm.sendAndDie();
@@ -700,35 +687,28 @@ return null;
                             if (recv_voidTovoid.retOp != null)
                                 recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
                         }
+                        // Begin Expr2
+                        leyendo += 1;
+                        JRget_op_lectores_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
+                        int idx = ((int)(Math.random() * l));
+                        // Begin Expr2
+                        System.out.println("P" + i + " leyendo " + buffer[idx] + " en pos " + idx);
                         {
                             jrvm.sendAndDie();
-                            Recv_ext recv_voidTovoid = JRget_op_mutex_voidTovoid().recv();
+                            Recv_ext recv_voidTovoid = JRget_op_lectores_voidTovoid().recv();
                             jrvm.ariseAndReceive();
                             if (recv_voidTovoid.retOp != null)
                                 recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
                         }
+                        // Begin Expr2
+                        leyendo -= 1;
+                        if (leyendo == 0) {
+                            JRget_op_escribir_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
+                        }
+                        JRget_op_lectores_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
+                    } else {
+                        JRget_op_mutex_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                     }
-                    // Begin Expr2
-                    cont += 1;
-                    JRget_op_mutex_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
-                    int idx = ((int)(Math.random() * n));
-                    // Begin Expr2
-                    System.out.println("Lector " + i + " lee " + fichero[idx] + " en " + idx);
-                    {
-                        jrvm.sendAndDie();
-                        Recv_ext recv_voidTovoid = JRget_op_mutex_voidTovoid().recv();
-                        jrvm.ariseAndReceive();
-                        if (recv_voidTovoid.retOp != null)
-                            recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
-                    }
-                    // Begin Expr2
-                    cont -= 1;
-                    if (cont == 0 && escritoresEsperando > 0) {
-                        JRget_op_escritor_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
-                    }
-                    JRget_op_mutex_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
-                    // Begin Expr2
-                    (new Cap_ext_(JRget_op_espera_intTovoid(), "void")).call(jrvm.getTimestamp(), new java.lang.Object [] {2000});
                 }
             }
         } catch (Exception JRe)    {
@@ -761,8 +741,8 @@ return null;
     }
     static {
         try {
-            for (int i = 0; i < cantlector; i++) {
-                op_l_intTovoid.send(jrvm.getTimestamp(), new java.lang.Object [] {i});
+            for (int i = 0; i < m; i++) {
+                op_L_intTovoid.send(jrvm.getTimestamp(), new java.lang.Object [] {i});
             }
         } catch (Exception JRe) { throw new jrRuntimeError(JRe.toString()); }
     };
@@ -770,7 +750,9 @@ return null;
     
     public static void main(String[] args) {
         // Begin Expr2
-        fichero = new int[n];
+        buffer = new int[l];
+        // Begin Expr2
+        r = new Random();
         prog p = new prog();
     }
     protected boolean JRcalled = false;
@@ -779,7 +761,7 @@ return null;
     { try {return jrresref.clone(); } catch (Exception e) {/* not gonna happen */ return null; } }
     protected void JRinit() {
     	if(this.JRcalled) return;
-    	jrresref = new JRprog(op_l_intTovoid, op_e_intTovoid, op_espera_intTovoid, op_mutex_voidTovoid, op_lector_voidTovoid, op_escritores_voidTovoid, op_lectores_voidTovoid, op_escritor_voidTovoid);
+    	jrresref = new JRprog(op_L_intTovoid, op_E_intTovoid, op_espera_intTovoid, op_lectores_voidTovoid, op_mutex_voidTovoid, op_escribir_voidTovoid, op_escritores_voidTovoid);
     	this.JRcalled = true;
     }
     private boolean JRproc = false;
