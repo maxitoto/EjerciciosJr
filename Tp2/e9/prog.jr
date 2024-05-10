@@ -1,6 +1,44 @@
 import edu.ucdavis.jr.JR;
-  
-public class prog{
     
+public class prog{
+    static final int iteraciones = 20;
+    static final int N = 5;//cantidad de filosofos
+    static cap void ()palillos[] = new cap void()[N];//arreglo de semaforos "cap" que sera cap, no lo se
+    
+    static {//se puede usar static directamente
+        for(int i = 0; i<N; i++){//inicializacion del arreglo con semaforos
+            palillos[i] = new sem(1);
+        }
+    }
+    
+    //nota: es posible ver el valor de cuantos procesos hay en un semaforo -> semaforo.length();
+    static process filosofo((int id = 0; id<N; id++)){
+        try{Thread.sleep(2500);}catch(Exception e){System.out.println(e);}//espera para que se llene el arreglo
+            //determinar de el palillo del actual filosofo
+            int mDerecha = id, mizquierda = (id+1>N-1? 0 : id+1);// utiliza un mismo tipo "int" para declarar dos variables sepraradas por un "," curiosa forma de hacerlo
+            //por otro lado la expresion (id+1>N-1? 0 : id+1) hace que si el id es 0 entonces la mano izquierda es 1 y hasta el 3 es igual, cuando llega el 4 su mano izquierda sera el 0 
 
+            //instroccir asimetria para no devolver un deadlock, si soy el ultimo hago un intercambio de mano "cambio el cuchillo a mi mano derecha y el tenedor a mi mano izquierda"
+            if(id == 0){
+                int aux = mizquierda;
+                mizquierda = mDerecha;
+                mDerecha = aux;
+            }
+        
+            for(int i = 0; i<iteraciones; i++){
+                P(palillos[mizquierda]);
+                P(palillos[mDerecha]);
+                System.out.println("COMER el Filosofo "+id);
+                try{Thread.sleep(1000);}catch(Exception e){System.out.println(e);}
+                V(palillos[mizquierda]);
+                V(palillos[mDerecha]);
+                System.out.println("PENSAR el Filosofo "+id);
+                try{Thread.sleep(1000);}catch(Exception e){System.out.println(e);}
+            }
+            System.out.println("daddad "+id);
+        
+    }
+
+    public static void main(String[] args){  
+    }
 }

@@ -1,0 +1,61 @@
+import edu.ucdavis.jr.JR;
+
+public class prog {
+
+    private static final int N = 5; 
+    private static cap void () palillos[] = new cap void()[N]; 
+
+
+    static op void comer(int t){
+        try{System.out.println("COMER");Thread.sleep(t);}catch(Exception e){}
+    }
+
+    static op void pensar(int t){
+        try{System.out.println("PENSAR");Thread.sleep(t);}catch(Exception e){}
+    }
+
+    public static void algo(int i) {
+        try {
+                // Verificar si el semáforo en la posición 'i' está inicializado
+                if (palillos[i] != null) {
+                    P(palillos[i]);
+                    P(palillos[(i+1) % N]);
+                    comer((int)(Math.random()*2000));
+                    P(palillos[i]);
+                    P(palillos[(i+1) % N]);
+                    pensar((int)(Math.random()*2000));
+                } else {
+                    System.out.println("Error: El semáforo en la posición " + i + " no está inicializado");
+                }            
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprimir detalles del error en la consola
+        }
+    }
+
+    
+        
+    public static void main(String[] args) {
+        try {
+            // Inicialización de los semáforos
+            for (int i = 0; i < N; i++) {
+                palillos[i] = new sem(1); // Crear un semáforo con valor inicial 1
+                System.out.println("palillo "+i+" TIENE "+ palillos[i].length());
+            }
+
+            // Crear una instancia de prog para ejecutar el proceso p0
+            prog p = new prog();
+            
+            
+        } catch (Exception e) {
+            e.printStackTrace(); // Imprimir detalles del error en la consola
+        }
+    }
+
+    static process filosofo((int i = 0; i<N; i++)){
+        try{Thread.sleep(2000);}catch(Exception e){}
+        while(true){
+        algo(i);
+        }
+    }
+}
+
