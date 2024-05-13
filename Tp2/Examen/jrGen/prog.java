@@ -15,7 +15,7 @@ public class prog extends java.lang.Object {
         super();
         JRprocess();
     }
-    static final int cantC = 1;
+    static final int cantC = 3;
     static final int cantB = 2;
     static // NUMBER 8
     Cap_ext_[] barberos = new // NUMBER 8
@@ -338,6 +338,8 @@ return null;
                     }
                     // Begin Expr2
                     System.out.println("Barbero " + i + " Cobra");
+                    // Begin Expr2
+                    System.out.println("Barbero " + i + " se Despide");
                     JRget_op_mutexB_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                 }
             }
@@ -534,10 +536,14 @@ return null;
                     if (recv_voidTovoid.retOp != null)
                         recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
                 }
-                if (sillas == 0) {
+                // Begin Expr2
+                clientesEsperando += 1;
+                // Begin Expr2
+                System.out.println("Cliente " + i + " Entra a la barberia");
+                if (clientesEsperando > 2) {
                     JRget_op_mutex_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                     // Begin Expr2
-                    clientesEsperando += 1;
+                    System.out.println("Cliente " + i + " debe esperar");
                     {
                         jrvm.sendAndDie();
                         Recv_ext recv_voidTovoid = JRget_op_espera_voidTovoid().recv();
@@ -545,6 +551,8 @@ return null;
                         if (recv_voidTovoid.retOp != null)
                             recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
                     }
+                    // Begin Expr2
+                    System.out.println("Cliente " + i + " es el siguiente");
                 } else {
                     JRget_op_mutex_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                 }
@@ -603,6 +611,8 @@ return null;
                 }
                 // Begin Expr2
                 System.out.println("Cliente " + i + " Paga al barbero " + miSilla);
+                // Begin Expr2
+                System.out.println("Cliente " + i + " se va de la barberia");
                 JRget_op_mutexC_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                 {
                     jrvm.sendAndDie();

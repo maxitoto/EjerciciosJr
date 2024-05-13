@@ -1,7 +1,7 @@
 import edu.ucdavis.jr.JR;
     
 public class prog{
-    static final int cantC = 1; //PROBAR CON 1,2,3,4,5,10
+    static final int cantC = 3; //PROBAR CON 1,2,3,4,5,10
     static final int cantB = 2;
     static cap void ()barberos[] = new cap void()[cantB];
     static cap void ()cortar[] = new cap void()[cantB];
@@ -38,16 +38,20 @@ public class prog{
             V(corteterminado);//sincornizacion para cobro
             P(listo);//sincornizacion para cobro
             System.out.println("Barbero "+i+" Cobra");
+            System.out.println("Barbero "+i+" se Despide");
             V(mutexB);//para que pase el siguiente cliente para cobrarle
         }
     }
     
     public static process Clientela((int i = 0; i<cantC; i++)){
         P(mutex);
-            if(sillas == 0){//si no hay sillas disponibles, libero la consulta y espero, inmediatamente halla una silla disponible se me asignara una
+        clientesEsperando +=1;
+        System.out.println("Cliente "+i+" Entra a la barberia");
+            if(clientesEsperando > 2){//si no hay sillas disponibles, libero la consulta y espero, inmediatamente halla una silla disponible se me asignara una
                 V(mutex);
-                clientesEsperando +=1;
+                System.out.println("Cliente "+i+" debe esperar");
                 P(espera);
+                System.out.println("Cliente "+i+" es el siguiente");
             }else{V(mutex);}
         
         P(mutex);
@@ -67,6 +71,7 @@ public class prog{
             V(listo);//sincornizacion para pago
             P(corteterminado);//sincornizacion para pago
             System.out.println("Cliente "+i+" Paga al barbero "+miSilla);
+            System.out.println("Cliente "+i+" se va de la barberia");
         V(mutexC);//libero para que pueda entrar el proximo barbero y cliente si lo hay
 
         P(mutex);
