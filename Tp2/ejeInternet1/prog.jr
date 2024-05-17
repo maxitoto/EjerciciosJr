@@ -1,0 +1,103 @@
+import edu.ucdavis.jr.JR;
+
+public class prog {
+
+    static final int N = 4;
+    static int contEmpaquetados = 0;
+    static int[] lineaProduccion = new int[N];
+
+    static sem lineaLibre = N;//para el colocador
+    static cap void ()esperando[] = new cap void()[3]; //un caso de los empaquetadores
+    static int[] RobotEsperando = new int[3];//para que los empaquetadores esperen hasta que haya por lo menos uno, aviara el colocador
+
+    static sem mutex = 1;
+
+    static{
+
+        for(int i = 0; i<N; i++){//la linea empieza vacia
+            lineaProduccion[i] = -1;
+        }
+        System.out.println("Arreglo inicializado");
+
+        for(int i = 0; i<3; i++){//para que esperen los empaquetadores si lo necesitan
+            esperando[i] = new sem(0);
+        }
+
+        for(int i = 0; i<3; i++){//para que se lo comuniquen al colocador
+            RobotEsperando[i] = -1;
+        }
+
+        
+    }
+
+
+    static op void espera(int t){
+        try{Thread.sleep(t);}catch(Exception e){}
+    }
+
+    static process RColocador{
+        System.out.println("Robot colocador comienza");
+        int i;
+        while(true){
+            P(lineaLibre);
+                i=0;
+
+                    while(i<N-1 & !(lineaProduccion[i] == -1)){++i;}
+                    //busco un espacio que dejo algun empaquetador, si no hay lugar entonces nisiquiera deberia llegar aqui
+        
+                P(mutex);
+                    if(lineaProduccion[i] == -1){
+                        lineaProduccion[i] = (int)(Math.random()*3)+1;
+                        System.out.println("Robot Colocador coloca "+lineaProduccion[i]+" en "+i);
+
+                        for(int j = 0; j<3; j++){//busco si alguien se quedo esperando y empieze a buscar otra vez
+                            if(lineaProduccion[i] == RobotEsperando[j]){
+                                V(esperando[j]);//le aviso al que espera que ya hay un elemento de su tipo
+                            }
+                        }
+
+                    }
+                V(mutex);
+
+                    
+        }   
+    }
+    
+    static process RobotsEnsambladores((int i = 1; i<4; i++)){
+        System.out.println("Robot ensamblador "+i+" comienza");
+        int A;
+        while(true){
+            A=0;
+
+                while(A<N-1 & !(lineaProduccion[A]==i)){++A;}
+            
+
+            P(mutex);
+                if(lineaProduccion[A] == i){//si encontre algun producto de mi tipo, lo empaqueto
+                    contEmpaquetados++;
+                    System.out.println("Robot ensamblador "+i+" empaqueta "+ lineaProduccion[A]+" de "+A+" ya empaquetamos: "+contEmpaquetados);
+                    lineaProduccion[A] = -1;
+                    V(lineaLibre);
+                }else{//si no lo encontre espero o la linea esta vacia entonces aviso al productor que estoy esperando un elemento de mi tipo
+                    RobotEsperando[i-1] = i;//aviso al colocador
+                    V(mutex);//libero la llave para otros
+                    P(esperando[i-1]);//espero
+                    RobotEsperando[i-1] = -1;//una vez liberado ya no aviso que estoy esperando
+                }
+            V(mutex);
+            espera(2000);
+        }   
+    }
+
+    
+
+
+    public static void main(String[] args){
+
+    }
+    
+}
+
+
+
+

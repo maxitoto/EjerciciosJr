@@ -1,7 +1,7 @@
 import edu.ucdavis.jr.JR;
     
 public class prog{
-    static final int cantC = 3; //PROBAR CON 1,2,3,4,5,10
+    static final int cantC = 4; //PROBAR CON 1,2,3,4,5,10
     static final int cantB = 2;
     static cap void ()barberos[] = new cap void()[cantB];
     static cap void ()cortar[] = new cap void()[cantB];
@@ -28,15 +28,22 @@ public class prog{
 
 
     public static process Barberia((int i = 0; i<cantB; i++)){
+        System.out.println("Barbero "+i+" entra a la barberia");
         while(true){
-            P(barberos[i]);//Los barberos duermen hasta que sea despertado por un cliente
+            if(clientesEsperando == 0 | clientesEsperando == cantC){
+                System.out.println("Barbero "+i+" no tiene cliente");
+                P(barberos[i]);//Los barberos duermen hasta que sea despertado por un cliente
+                System.out.println("Barbero "+i+" tiene cliente");
+            }
+            
+            System.out.println("Barbero "+i+" listo para cortar");
             V(cortar[i]);//sincronizacion para corte
             P(sentarse[i]);//sincronizacion para corte
             System.out.println("Barbero "+i+" Corta cabello");
 
             P(mutexC);//pasa uno y el otro barbero espera si es necesario
-            V(corteterminado);//sincornizacion para cobro
-            P(listo);//sincornizacion para cobro
+            V(cortar[i]);//reutilizo para pagar
+            P(sentarse[i]);//reutirilizo para pagar
             System.out.println("Barbero "+i+" Cobra");
             System.out.println("Barbero "+i+" se Despide");
             V(mutexB);//para que pase el siguiente cliente para cobrarle
@@ -52,24 +59,25 @@ public class prog{
                 System.out.println("Cliente "+i+" debe esperar");
                 P(espera);
                 System.out.println("Cliente "+i+" es el siguiente");
-            }else{V(mutex);}
+            }else{
+                V(barberos[clientesEsperando-1]);
+                V(mutex);
+            }
         
         P(mutex);
-            clientesEsperando -=1;
             int miSilla;//declaro la silla aqui para que los procesos que esperan no ocupen memoria, aunque creo que ya la reserva
-            miSilla = sillalibre-1;//mi silla sera la disponible
+            if(clientesEsperando == 1 | clientesEsperando==2){miSilla=clientesEsperando-1;}else{miSilla = sillalibre-1;}//mi silla sera la disponible
             sillas-=1;//la silla sa no esta disponible
             if(sillas == 0 & (miSilla == 2 | miSilla == 1)){sillalibre = 0;}else{if (sillas == 1 & sillalibre == 2){sillalibre = 1;}else{sillalibre = 2;}}
         V(mutex);
 
-        V(barberos[miSilla]);//despierto al barbeo del la silla 1 o 2
         V(sentarse[miSilla]);//me siento en la silla 1 o 2
         P(cortar[miSilla]);//espero que me corte el cabello el barbero 1 o 2
         System.out.println("Cliente "+i+" Le corta el cabello el barbero "+miSilla);
         
         P(mutexB);//evito que dos barberos y dos clientes page y cobre
-            V(listo);//sincornizacion para pago
-            P(corteterminado);//sincornizacion para pago
+            V(sentarse[miSilla]);//reutilizo para pagar
+            P(cortar[miSilla]);//reutilizo para pagar
             System.out.println("Cliente "+i+" Paga al barbero "+miSilla);
             System.out.println("Cliente "+i+" se va de la barberia");
         V(mutexC);//libero para que pueda entrar el proximo barbero y cliente si lo hay
@@ -81,7 +89,7 @@ public class prog{
 
         
         P(mutex);
-            if(clientesEsperando > 0){
+            if(clientesEsperando < cantC){
                 V(espera);//si hay un proximo cliente lo invito a sentarse
             }
         V(mutex);

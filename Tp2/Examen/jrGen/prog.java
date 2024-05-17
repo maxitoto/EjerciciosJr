@@ -15,7 +15,7 @@ public class prog extends java.lang.Object {
         super();
         JRprocess();
     }
-    static final int cantC = 3;
+    static final int cantC = 4;
     static final int cantB = 2;
     static // NUMBER 8
     Cap_ext_[] barberos = new // NUMBER 8
@@ -303,14 +303,24 @@ return null;
             // GetMethod 1
             int i = ((Number) JRargs[0]).intValue();
             {
+                // Begin Expr2
+                System.out.println("Barbero " + i + " entra a la barberia");
                 JRLoop1: while (true) {
-                    {
-                        jrvm.sendAndDie();
-                        Recv_ext recv_voidTovoid = barberos[i].recv();
-                        jrvm.ariseAndReceive();
-                        if (recv_voidTovoid.retOp != null)
-                            recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
+                    if (clientesEsperando == 0 | clientesEsperando == cantC) {
+                        // Begin Expr2
+                        System.out.println("Barbero " + i + " no tiene cliente");
+                        {
+                            jrvm.sendAndDie();
+                            Recv_ext recv_voidTovoid = barberos[i].recv();
+                            jrvm.ariseAndReceive();
+                            if (recv_voidTovoid.retOp != null)
+                                recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
+                        }
+                        // Begin Expr2
+                        System.out.println("Barbero " + i + " tiene cliente");
                     }
+                    // Begin Expr2
+                    System.out.println("Barbero " + i + " listo para cortar");
                     cortar[i].send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                     {
                         jrvm.sendAndDie();
@@ -328,10 +338,10 @@ return null;
                         if (recv_voidTovoid.retOp != null)
                             recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
                     }
-                    JRget_op_corteterminado_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
+                    cortar[i].send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                     {
                         jrvm.sendAndDie();
-                        Recv_ext recv_voidTovoid = JRget_op_listo_voidTovoid().recv();
+                        Recv_ext recv_voidTovoid = sentarse[i].recv();
                         jrvm.ariseAndReceive();
                         if (recv_voidTovoid.retOp != null)
                             recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
@@ -554,6 +564,7 @@ return null;
                     // Begin Expr2
                     System.out.println("Cliente " + i + " es el siguiente");
                 } else {
+                    barberos[clientesEsperando - 1].send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                     JRget_op_mutex_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                 }
                 {
@@ -563,11 +574,14 @@ return null;
                     if (recv_voidTovoid.retOp != null)
                         recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
                 }
-                // Begin Expr2
-                clientesEsperando -= 1;
                 int miSilla = /*JR init for inni*/ 0;
-                // Begin Expr2
-                miSilla = sillalibre - 1;
+                if (clientesEsperando == 1 | clientesEsperando == 2) {
+                    // Begin Expr2
+                    miSilla = clientesEsperando - 1;
+                } else {
+                    // Begin Expr2
+                    miSilla = sillalibre - 1;
+                }
                 // Begin Expr2
                 sillas -= 1;
                 if (sillas == 0 & (miSilla == 2 | miSilla == 1)) {
@@ -583,7 +597,6 @@ return null;
                     }
                 }
                 JRget_op_mutex_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
-                barberos[miSilla].send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                 sentarse[miSilla].send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                 {
                     jrvm.sendAndDie();
@@ -601,10 +614,10 @@ return null;
                     if (recv_voidTovoid.retOp != null)
                         recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
                 }
-                JRget_op_listo_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
+                sentarse[miSilla].send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                 {
                     jrvm.sendAndDie();
-                    Recv_ext recv_voidTovoid = JRget_op_corteterminado_voidTovoid().recv();
+                    Recv_ext recv_voidTovoid = cortar[miSilla].recv();
                     jrvm.ariseAndReceive();
                     if (recv_voidTovoid.retOp != null)
                         recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
@@ -633,7 +646,7 @@ return null;
                     if (recv_voidTovoid.retOp != null)
                         recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
                 }
-                if (clientesEsperando > 0) {
+                if (clientesEsperando - 1 < cantC) {
                     JRget_op_espera_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                 }
                 JRget_op_mutex_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
