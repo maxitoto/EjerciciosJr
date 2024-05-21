@@ -306,7 +306,7 @@ return null;
                 // Begin Expr2
                 System.out.println("Barbero " + i + " entra a la barberia");
                 JRLoop1: while (true) {
-                    if (clientesEsperando == 0 | clientesEsperando == cantC) {
+                    if (clientesEsperando == 0) {
                         // Begin Expr2
                         System.out.println("Barbero " + i + " no tiene cliente");
                         {
@@ -646,7 +646,7 @@ return null;
                     if (recv_voidTovoid.retOp != null)
                         recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
                 }
-                if (clientesEsperando - 1 < cantC) {
+                if (clientesEsperando < cantC) {
                     JRget_op_espera_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
                 }
                 JRget_op_mutex_voidTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);

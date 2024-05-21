@@ -1,0 +1,105 @@
+import edu.ucdavis.jr.JR;
+    
+public class prog{
+    
+    static final int visitantes = 25;
+    static final int cantAutos = 5;
+
+    static sem esperoAuto = cantAutos;
+    
+    static sem sentarse = 0;
+    static sem inciarViaje = 0;
+
+    static sem mutex = 1;
+    static sem mutex2 = 1;
+
+    static sem seSento = 0;
+    static sem indicaAsiento = 0;
+
+    static int esperando = 0;
+    static int sentados = 0;
+    static final int limite = 4;
+    static boolean funcion = false;
+
+    static sem esperar = 0;
+
+
+
+    static op void sleeping(int T){
+        try{Thread.sleep(T);}catch(Exception e){}
+    }
+
+    static process museo((int i = 0; i<visitantes; i++)){
+        System.out.println("visitante "+i+" ingreso al museo");
+        sleeping(2000);
+        System.out.println("visitante "+i+" salio del museo");
+
+        P(esperoAuto);
+
+        V(sentarse);
+        P(inciarViaje);
+        System.out.println("visitante "+i+" comienza el recorrido del safari");
+    }
+
+    static process autos((int i = 0; i<cantAutos; i++)){
+        while(true){
+
+            V(inciarViaje);
+            P(sentarse);
+            sleeping(2000);
+            System.out.println("auto "+i+" termino el recorrido por el safari");
+
+            System.out.println("auto "+i+" esta libre");
+            V(esperoAuto);
+            
+            P(mutex);
+            if(funcion){
+                P(mutex2);
+                esperando+=1;
+                V(mutex2);
+                V(mutex);
+                P(esperar);
+            }else{
+                V(mutex);
+            }
+
+            V(seSento);
+            P(indicaAsiento);
+        }
+    }
+
+    static process vr{
+        while(true){
+            P(mutex2);
+             if((esperando == 0 & sentados < limite & sentados > 0) | sentados == limite){
+                V(mutex2);
+                P(mutex);
+                funcion = true;
+                V(mutex);
+                System.out.println("inicia la funcion con "+sentados+" visitantes y "+esperando+" visitantes esperando");
+                sleeping(2000);
+                System.out.println("termina la funcion");
+
+                
+                sentados = 0;
+
+                funcion = false;
+            }else{
+                if(esperando > 0 & sentados < limite){
+                    esperando -=1;
+                    V(esperar);
+                    V(mutex2);
+                }else{V(mutex2);}
+
+                V(indicaAsiento);
+                P(seSento);
+
+                sentados +=1;
+            }
+        }
+    }
+
+    public static void main(String[] args){
+
+    }
+}
