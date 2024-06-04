@@ -1,0 +1,20 @@
+public class prog{
+    static semaforo semaforoUno = new semaforo("hola");
+
+    public static void main(String... args){}
+
+    public static process p1{
+        while(true){
+            semaforoUno.escribir("p1");
+        }
+    }
+
+    public static process p2{
+        while(true){
+            semaforoUno.escribir("p2");
+        }
+    }
+
+   
+    
+}
