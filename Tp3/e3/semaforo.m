@@ -1,13 +1,14 @@
 _monitor semaforo{
-    _var int entrantes = 1;
+    _var int esperando = 1;
     _condvar s;
     
-    _proc void escribir(String txt){
-        if(entrantes == 0){_wait(s);}
-        --entrantes;
-        System.out.println("el proceso "+txt+" usa el monitor");
-        ++entrantes;
-        _signal(s);
+    _proc void await(){
+        while(esperando == 0){_wait(s);}
+        --esperando;
     }
     
+    _proc void asignal(){
+        ++esperando;
+        _signal(s);
+    }
 }
