@@ -3,7 +3,7 @@ _monitor semaforo{
     _condvar s;
     
     _proc void escribir(String txt){
-        while(entrantes == 0){_wait(s);}
+        if(entrantes == 0){_wait(s);}
         --entrantes;
         System.out.println("el proceso "+txt+" usa el monitor");
         ++entrantes;
