@@ -1,0 +1,21 @@
+public class prog{
+    static Semaforo semaforo = new Semaforo("semaforo LyR");
+    
+    public static void main(String... args){}
+
+    public static process p1{
+        while(true){
+            semaforo.await();
+            System.out.println("P1 En Seccion Critica");
+            semaforo.asignal();
+        }
+    }
+
+    public static process p2{
+        while(true){
+            semaforo.await();
+            System.out.println("P2 En Seccion Critica");
+            semaforo.asignal();
+        }
+    }
+}

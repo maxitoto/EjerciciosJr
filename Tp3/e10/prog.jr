@@ -1,0 +1,31 @@
+public class prog {
+    static int c = 15;
+    static int b = 1;
+    static Monitor monitor;
+    static {
+        monitor = new Monitor("Monitor L&R");
+    }
+
+    static void espera(int t) {
+        try {
+            Thread.sleep(t);
+        } catch (Exception e) {}
+    }
+
+    static process barbero((int i = 0; i < b; i++)) {
+        while (true) {
+            monitor.duermeOtrabaja();//aqui el barbero duerme o continua trabajando
+            monitor.cortarPelo();//aqui se sincroniza con el cliente para cortar
+            monitor.cobrarAlCliente();//aqui se sincroniza con el cliente para pagar
+        }
+    }
+
+    static process clientes((int i = 0; i < c; i++)) {      
+            monitor.ingresar();//aqui o se sienta uno o espera con los demas
+            monitor.seCortaElPelo();//aqui se sincroniza con el barbero para cortar
+            monitor.pagaAlBarebero();//aqui se sincroniza con el barbero para pagar
+            monitor.seVa();
+    }
+
+    public static void main(String... args) {}
+}

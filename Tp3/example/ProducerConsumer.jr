@@ -1,0 +1,15 @@
+public class ProducerConsumer {
+    private static final int N = 12; //Number of producers and consumers
+
+    private static BoundedBuffer bb = new BoundedBuffer("Monitor ProductorConsumidor"); //The monitor
+
+    public static void main(String... args){}
+
+    private static process Producer((int i = 0; i <= N; i++)){
+        bb.deposit(""+i);
+    }
+
+    private static process Consumer((int i = 0; i <= N; i++)){
+        System.out.println("Consumer" + i + " : " + bb.fetch());
+    }
+}

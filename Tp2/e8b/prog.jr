@@ -1,16 +1,19 @@
 import edu.ucdavis.jr.JR;
 //inserto cambio
 public class prog {
-    static final int l = 10;
-    static final int n = 8;
-    static final int m = 8;
-    static int[] fichero;//recurso compartido
+    static final int largo = 10;
+    static final int e = 8;
+    static final int l = 8;
+    static int[] fichero = new int[10];
 
-    static boolean quieroescribir = false;
-    static boolean escribiendo = false;
     static sem escritores = 1;
-
+    static sem lectores = 1;
+    static sem mutexL = 1;
     static sem mutex = 1;
+    static sem mutexE = 1;
+
+    static int contL = 0;
+    static int contE = 0;
 
     static op void espera(int t){
         try{
@@ -18,42 +21,59 @@ public class prog {
         }catch(Exception e){}
     }
 
-    static process e((int i = 0; i<n; i++)){
+    static process escritor((int i = 0; i<e; i++)){
         while(true){
-            P(mutex);
-                quieroescribir = true;
-            V(mutex);
+            P(mutexE);
+                contE+=1;
+                if(contE == 1){
+                    P(lectores);
+                }
+            V(mutexE);
 
             P(escritores);
-                escribiendo = true;
-                int idx = (int)(Math.random()*n);
+
+                int idx = (int)(Math.random()*largo);
                 fichero[idx] = (int)(Math.random()*100 / Math.random());
                 System.out.println("Escritor "+i+" escribe "+fichero[idx]+" en pos "+idx);
 
-                P(mutex);
-                    quieroescribir = false;
-                V(mutex);
-
-                escribiendo = false;
             V(escritores);
+
+            P(mutexE);
+                contE-=1;
+                if(contE == 0){
+                    V(lectores);
+                }
+            V(mutexE);
+            espera(2000);
         }
     }
 
-    static process l((int i = 0; i<m; i++)){
+    static process lector((int i = 0; i<l; i++)){
         while(true){
-            P(mutex);
-                if(!(quieroescribir) & !(escribiendo)){
-                    V(mutex);
-                    int idx = (int)(Math.random()*n);
+            P(mutexL);
+                P(lectores);
+                    P(mutex);
+                        contL+=1;
+                        if(contL == 0){
+                            P(escritores);
+                        }
+                    P(mutex);
+                V(lectores);
+            V(mutexL);
+
+                    int idx = (int)(Math.random()*largo);
                     System.out.println("Lector "+i+" lee "+fichero[idx]+" en pos "+idx);
-                }else{
-                    V(mutex);
+
+            P(mutex);
+                contL-=1;
+                if(contL == 0){
+                    V(escritores);
                 }
+            V(mutex);
+            espera(2000);
         }
     }
 
     public static void main(String[] args){
-        fichero = new int[n];
-        prog p = new prog();
     }
 }

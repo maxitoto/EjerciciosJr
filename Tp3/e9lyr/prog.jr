@@ -1,0 +1,32 @@
+public class prog{
+    static int c = 10;
+    static int p = 10;
+    static Monitor monitor;
+    static{
+        monitor = new Monitor("Monitor L&R");
+    }
+
+    static void espera(int t){
+        try{
+            Thread.sleep(t);
+        }catch(Exception e){}
+    }
+
+    static process productores((int i = 0; i<p; i++)){
+        while(true){
+            espera(100);
+            monitor.producir(i);
+        }
+    }
+
+    static process consumidores((int i = 0; i<c; i++)){
+        while(true){
+            espera(250);
+            monitor.consumir(i);
+        }
+    }
+
+
+    public static void main(String... args){}
+
+}

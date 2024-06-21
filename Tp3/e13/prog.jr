@@ -1,0 +1,19 @@
+public class prog{
+    static final int p = 20;
+    static Monitor despachador = new Monitor("Monitor hoare");
+
+    static void esperar(int t){
+        try{Thread.sleep(t);}catch(Exception e){}
+    }
+
+    static process pocesos((int Pid = 0; Pid<p; Pid++;)){
+        int Cpu = despachador.adquirirCPU(Pid);
+        System.out.println("proceso "+Pid+" esta usando el CPU "+Cpu);
+        esperar(8500);
+        despachador.liberarCpu(Cpu);
+        System.out.println("proceso "+Pid+" deja de usar el CPU "+Cpu);
+    }
+
+    
+    public static void main(String... args){}
+}

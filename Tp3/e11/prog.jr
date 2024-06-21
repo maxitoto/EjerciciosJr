@@ -1,0 +1,21 @@
+public class prog{
+
+    static final int m = 50;
+    static Monitor monitor = new Monitor("Monitor hoare");
+
+    static void esperar(int t){
+        try{Thread.sleep(t);}catch(Exception e){}
+    }
+
+    static process procesos((int i = 0; i<m; i++;)){
+        while(true){
+            monitor.solicitarRecursos(i);
+            System.out.println("proceso "+i+" tiene los recursos necesarios para mostar este mensaje");
+            esperar(600);
+            monitor.devolverRecursos(i);
+            esperar(8500);
+        }
+    }
+
+    public static void main(String... args){}
+}

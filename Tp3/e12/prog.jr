@@ -1,0 +1,35 @@
+public class prog{
+
+    static Monitor monitor = new Monitor("Monitor hoare");
+
+    static void esperar(int t){
+        try{Thread.sleep(t);}catch(Exception e){}
+    }
+
+    static process cocinero{
+        while(true){
+            System.out.println("Cocinero extiende una masa de pizza y la manda a preparar");
+            System.out.println(monitor.preprarpizza());
+        }
+    }
+
+    static process ayudanteA{
+        while(true){
+            monitor.colocarSalsa();
+        }
+    }
+
+    static process ayudanteB{
+        while(true){
+            monitor.colocarQueso();
+        }
+    }
+
+    static process ayudanteC{
+        while(true){
+            monitor.colocarToppings();      
+        }
+    }
+
+    public static void main(String... args){}
+}

@@ -1,0 +1,36 @@
+public class prog{
+    static int e = 5;
+    static int l = 5;
+    static Monitor monitor;
+    static{
+        monitor = new Monitor("Monitor Hoare");
+    }
+
+    static void espera(int t){
+        try{
+            Thread.sleep(t);
+        }catch(Exception e){}
+    }
+
+    static process escritores((int i = 0; i<e; i++)){
+        while(true){
+            espera(1500);
+            monitor.escribir(i);
+            espera(1500);
+        }
+    }
+
+    static process lectrores((int i = 0; i<l; i++)){
+        while(true){
+            espera(1500);
+            System.out.println("lector "+i+" esta leyendo "+monitor.leer(i));
+            espera(1500);
+            monitor.pararDeLeer(i);
+            espera(1500);
+        }
+    }
+
+
+    public static void main(String... args){}
+
+}
