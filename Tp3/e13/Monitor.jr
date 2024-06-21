@@ -95,73 +95,69 @@ System
 // Monitor.m, line 14: 
 
 
-// Monitor.m, line 15:         soyElUltimo--;
+// Monitor.m, line 15:         cpuDisponible--;
 
-}soyElUltimo
+}cpuDisponible
 --;
-// Monitor.m, line 16:         cpuDisponible--;
-
-cpuDisponible
---;
-// Monitor.m, line 17: 
+// Monitor.m, line 16: 
 
 
-// Monitor.m, line 18:         if(CPUs[0]){
+// Monitor.m, line 17:         if(CPUs[0]){
 
 if
 (CPUs
 [0]){
-// Monitor.m, line 19:             CPUs[0]=false;
+// Monitor.m, line 18:             CPUs[0]=false;
 
 CPUs
 [0]=false
 ;
-// Monitor.m, line 20:             contAsignaciones++;
+// Monitor.m, line 19:             contAsignaciones++;
 
 contAsignaciones
 ++;
-// Monitor.m, line 21:             _return 0;
+// Monitor.m, line 20:             _return 0;
 
 { if (true) {
   m_next();
   return 
 0
-// Monitor.m, line 22:         }else{
+// Monitor.m, line 21:         }else{
 
 ;
 }}
 }else
 {
-// Monitor.m, line 23:             CPUs[1]=false;
+// Monitor.m, line 22:             CPUs[1]=false;
 
 CPUs
 [1]=false
 ;
-// Monitor.m, line 24:             contAsignaciones++;
+// Monitor.m, line 23:             contAsignaciones++;
 
 contAsignaciones
 ++;
-// Monitor.m, line 25:             _return 1;
+// Monitor.m, line 24:             _return 1;
 
 { if (true) {
   m_next();
   return 
 1
-// Monitor.m, line 26:         }
+// Monitor.m, line 25:         }
 
 ;
 }}
 
-// Monitor.m, line 27:     }
+// Monitor.m, line 26:     }
 
 }
-// Monitor.m, line 28: 
+// Monitor.m, line 27: 
 
 
-// Monitor.m, line 29:     _proc void liberarCpu(int cpu){
+// Monitor.m, line 28:     _proc void liberarCpu(int cpu){
 
   m_next();
-throw new RuntimeException("reached end of non-void _proc (Monitor.m, line 29) without executing a return");
+throw new RuntimeException("reached end of non-void _proc (Monitor.m, line 28) without executing a return");
 }
 public
 void
@@ -172,45 +168,46 @@ cpu
     op void m_return_from_wait();
     P(m_mutex);
 
-// Monitor.m, line 30:             cpuDisponible++;
+// Monitor.m, line 29:             cpuDisponible++;
 
 cpuDisponible
 ++;
-// Monitor.m, line 31: 
+// Monitor.m, line 30:             soyElUltimo--;
 
-
-// Monitor.m, line 32:             CPUs[cpu]=true;
+soyElUltimo
+--;
+// Monitor.m, line 31:             CPUs[cpu]=true;
 
 CPUs
 [cpu
 ]=true
 ;
-// Monitor.m, line 33:             _signal(hayaCPUdisponible);
+// Monitor.m, line 32:             _signal(hayaCPUdisponible);
 
 (hayaCPUdisponible ).m_signal();
 
-// Monitor.m, line 34: 
+// Monitor.m, line 33: 
 
 
-// Monitor.m, line 35:             if(soyElUltimo==0){
+// Monitor.m, line 34:             if(soyElUltimo==0){
 
 if
 (soyElUltimo
 ==0){
-// Monitor.m, line 36:             System.out.println("Asignaciones Totales: "+contAsignaciones);
+// Monitor.m, line 35:             System.out.println("Asignaciones Totales: "+contAsignaciones);
 
 System
 .out
 .println
 ("Asignaciones Totales: "+contAsignaciones
 );
-// Monitor.m, line 37:         }
+// Monitor.m, line 36:         }
 
 
-// Monitor.m, line 38:     }
+// Monitor.m, line 37:     }
 
 }
-// Monitor.m, line 39: }
+// Monitor.m, line 38: }
   m_next();
 }
 }

@@ -91,8 +91,6 @@ class Monitor extends java.lang.Object {
             }
         }
         // Begin Expr2
-        soyElUltimo--;
-        // Begin Expr2
         cpuDisponible--;
         if (CPUs[0]) {
             // Begin Expr2
@@ -127,7 +125,7 @@ class Monitor extends java.lang.Object {
         }
         // Begin Expr2
         m_next();
-        throw new RuntimeException("reached end of non-void _proc (Monitor.m, line 29) without executing a return");
+        throw new RuntimeException("reached end of non-void _proc (Monitor.m, line 28) without executing a return");
     }
     
     public void liberarCpu(int cpu) {
@@ -146,6 +144,8 @@ class Monitor extends java.lang.Object {
         }
         // Begin Expr2
         cpuDisponible++;
+        // Begin Expr2
+        soyElUltimo--;
         // Begin Expr2
         CPUs[cpu] = true;
         // Begin Expr2

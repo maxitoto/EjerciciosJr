@@ -12,7 +12,6 @@ _monitor Monitor{
             _wait(hayaCPUdisponible);
         }
 
-        soyElUltimo--;
         cpuDisponible--;
 
         if(CPUs[0]){
@@ -28,7 +27,7 @@ _monitor Monitor{
 
     _proc void liberarCpu(int cpu){
             cpuDisponible++;
-
+            soyElUltimo--;
             CPUs[cpu]=true;
             _signal(hayaCPUdisponible);
 
