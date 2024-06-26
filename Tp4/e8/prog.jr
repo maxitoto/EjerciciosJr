@@ -1,0 +1,58 @@
+public class prog{
+
+    static op void darMasa(String);
+    static op void ponerSalsa(String);
+    static op void ponerQueso(String);
+    static op void ponerTopping(String);
+    static op void cocinarPizza(String);
+
+    static{
+        send darMasa("masa"); //pivote para que empiece primero un escritor
+    }
+
+    static process pizzero{
+        String mensaje;
+        while(true){
+            System.out.println("pizzero pone la masa en la tabla");
+            receive darMasa(mensaje);
+            System.out.println("Pizzero estira la "+mensaje);
+            send ponerSalsa("pone la salsa!");
+            receive cocinarPizza(mensaje);
+            System.out.println("Pizzero cocina la pizza");
+            send darMasa("masa");
+        }
+    }
+
+    static process salsero{
+        String mensaje;
+        while(true){
+            receive ponerSalsa(mensaje);
+            System.out.println("el pizzero dice '"+mensaje+"'");
+            System.out.println("salsero coloca salsa en la masa");
+            send ponerQueso("pone el queso!");
+        }
+    }
+
+    static process quesero{
+        String mensaje;
+        while(true){
+            receive ponerQueso(mensaje);
+            System.out.println("el salsero dice '"+mensaje+"'");
+            System.out.println("quesero coloca el queso en la masa");
+            send ponerTopping("pone el jamon y morron!");
+        }
+    }
+
+    static process toppingero{
+        String mensaje;
+        while(true){
+            receive ponerTopping(mensaje);
+            System.out.println("el quesero dice '"+mensaje+"'");
+            System.out.println("toppingero coloca el jamon y el morron en la masa");
+            send cocinarPizza("listo!");
+        }
+    }
+
+    public static void main(String ... args){}
+
+}

@@ -1,0 +1,46 @@
+import java.util.concurrent.ThreadLocalRandom;
+public class prog {
+    static final int c = 5;
+    static final int p = 15;
+
+    static final int longBuffer = 5;
+    static String mensajesPosibles = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    static int elementos=0;
+
+    static op void puedoConsumir(char);
+    static op void puedoProducir(char);
+    
+    static{
+        System.out.println("inicializando buzon");
+        for(int i=0; i<longBuffer; i++){
+            send puedoProducir('\u0000');
+        }
+        System.out.println("Buzon listo\n");
+    }
+    
+    static process Producer((int i = 0; i<p; i++;)){
+        while(true){
+            int indiceAleatorio = ThreadLocalRandom.current().nextInt(0, (mensajesPosibles.length() - 1) + 1);
+            char mensaje;
+            receive puedoProducir(mensaje);
+            mensaje = mensajesPosibles.charAt(indiceAleatorio);
+            elementos++;
+            System.out.println("Productor produjo "+mensaje+" elementos del buzon "+elementos);  
+            send puedoConsumir(mensaje);
+        }
+
+    }
+
+    static process Consumer((int i = 0; i<c; i++;)){
+        while(true){
+            char mensaje;
+            receive puedoConsumir(mensaje);
+            elementos--;
+            System.out.println("Consumidor consume "+mensaje+" elementos del buzon "+elementos);
+            mensaje = '\u0000';
+            send puedoProducir(mensaje);
+        }
+    }
+
+    public static void main(String... args){}
+}

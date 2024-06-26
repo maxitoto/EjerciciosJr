@@ -1,0 +1,17 @@
+public class prog{
+    static Monitor monitor = new Monitor("LyR");
+
+    static process autocruzaNorteAsur((int i =0; i<20; i++)){
+        monitor.cruzar(0);
+        System.out.println("auto "+i+" cruza desde el norte hacia el sur");
+        monitor.liberar(0);
+    }
+    static process autocruzaSurAnorte((int i =0; i<10; i++)){
+        monitor.cruzar(1);
+        System.out.println("auto "+i+" cruza desde el sur hacia el norte");
+        monitor.liberar(1);
+    }
+
+    public static void main(String... args){}
+
+}

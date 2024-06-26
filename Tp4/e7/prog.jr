@@ -1,0 +1,68 @@
+public class prog{
+    static int cantC = 10;
+    static int cantB = 3;
+    static op void sillonDeEspera(String); static int contClEsperando = 0;
+    static op void barberoduerme(String); static int barberoDisponible = 3;
+    static op void cortaAlCLiente(String);
+    static op void leCortaElBarbero(String);
+    static op void cobrar(String);
+    static op void paga(String);
+    static op void mutexA(String);
+    static op void mutexB(String);
+
+    static{
+        send mutexA("");
+        send mutexB("");
+    }
+
+    static process clientes((int i = 0; i<cantC; i++)){
+        String mensaje = ""+i;
+        contClEsperando++;
+        if (barberoDisponible == 0){
+            receive sillonDeEspera(mensaje);
+        }
+        contClEsperando--;
+        barberoDisponible--;
+        send barberoduerme(""+i);
+
+        send leCortaElBarbero(""+i);
+        receive cortaAlCLiente(mensaje);
+        System.out.println("barbero "+mensaje+" me corta el cabello");
+
+        String mute;
+        receive mutexA(mute);
+        send cobrar(""+i);
+        receive paga(mensaje);
+        System.out.println("Le pago al barbero "+mensaje);
+        send mutexB("");
+    }
+
+    static process barberos((int i = 1; i<cantB+1; i++)){
+        String mensaje = "";
+        while(true){
+            if(contClEsperando>0){
+                receive barberoduerme(mensaje);
+            }else{
+                send sillonDeEspera("Siguiente!!, al a silla "+i);
+            }
+
+            System.out.println("Soy el barbero "+i+" y atiendo al cliente "+mensaje);
+
+            send cortaAlCLiente(""+i);
+            receive leCortaElBarbero(mensaje);
+            System.out.println("Al cliente "+mensaje+" le corto el pelo");
+
+            String mute;
+            receive mutexB(mute);
+            send paga(""+i);
+            receive cobrar(mensaje);
+            System.out.println("Le cobro al cliente "+mensaje);
+            send mutexA("");
+        }
+    }
+
+    
+
+    public static void main(String ... args){}
+
+}

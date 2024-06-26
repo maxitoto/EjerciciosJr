@@ -1,0 +1,26 @@
+public class prog {
+    static Monitor monitor = new Monitor("Monitor LyR");
+
+    static void espera(int t){
+        try{Thread.sleep(t);}catch(Exception e){}
+    }
+
+    static process agente{
+        while(true){
+            monitor.colocarIngredientes();
+        }
+    }
+
+    static process fumador((int i = 1; i<4; i++)){
+        while(true){
+            if(monitor.comprobarMesa(i)){
+                System.out.println("Fumador "+i+" arma su cigarrillo");
+                monitor.fumar(i);
+            }
+        }
+    }
+
+    
+
+    public static void main(String... args){}
+}

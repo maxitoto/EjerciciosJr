@@ -1,0 +1,51 @@
+public class prog {
+
+    static op void solicitudDeCuadro(String);
+    static op void solicitudDeManillar(String);
+    static op void solicitudDeRueda(String);
+    static op void esperaComponentes(String);
+
+
+    static process ensamblador{
+        send solicitudDeCuadro("Necesito un cuadro!!!");
+        send solicitudDeManillar("Necesito un manillar!!!");
+        send solicitudDeRueda("Necesito un rueda!!!");
+        send solicitudDeRueda("Necesito otra rueda!!!");
+
+        String componente;
+
+        for(int i = 0; i<4; i++){
+            receive esperaComponentes(componente);
+            System.out.println("Elensablador recibio un/a "+componente);
+        }
+
+        System.out.println("Elensablador ensambla la bicicleta");
+    }
+
+    static process fabricante1{
+        String solicitud;
+            receive solicitudDeCuadro(solicitud);
+            System.out.println("El ensamblador dice ' "+solicitud+" '");
+            send esperaComponentes("Cuadro");
+    }
+
+    static process fabricante2{
+        String solicitud;
+            receive solicitudDeManillar(solicitud);
+            System.out.println("El ensamblador dice ' "+solicitud+" '");
+            send esperaComponentes("manillar");
+    }
+
+    static process fabricante3{
+        String solicitud;
+        for(int i = 0; i<2; i++){
+            receive solicitudDeRueda(solicitud);
+            System.out.println("El ensamblador dice ' "+solicitud+" '");
+            send esperaComponentes("rueda");
+        }
+    }
+
+
+    public static void main(String... args){}
+
+}

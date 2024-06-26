@@ -1,0 +1,26 @@
+public class prog{
+    
+    static Monitor monitor = new Monitor("Monitor L&R");
+
+    static process montador{
+        System.out.println("El montador espera las piezas");
+        monitor.ensamblarBicicleta();
+        System.out.println("El montador termino la bicicleta");
+    }
+
+    static process op1{
+        monitor.montarRuedas();
+    }
+
+    static process op2{
+        monitor.montarCuadro();
+    }
+
+    static process op3{
+        monitor.montarManillar();
+    }
+
+
+    
+    public static void main(String... args){}
+}

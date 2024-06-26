@@ -1,0 +1,27 @@
+public class prog{
+
+    static op void mailbox(boolean);
+    static{
+        send mailbox(false);
+    }
+
+    static boolean testAndSet() {
+        boolean mensaje;
+        receive mailbox(mensaje);
+
+        // Envia el nuevo estado del lock al canal
+        send mailbox(true);
+
+        return mensaje;
+    }
+
+    static process p((int i = 0; i<3; i++)){
+        boolean result = testAndSet();
+        System.out.println("Proceso "+i+" esta en la zona critica y result = "+result);
+    }
+
+    
+
+    public static void main(String... args){}
+
+}

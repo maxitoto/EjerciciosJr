@@ -1,0 +1,47 @@
+public class prog{
+    static final int cantE = 5;
+    static final int cantL = 15;
+    static int file;
+
+    static op void lectoresEsperando(int); static int contLectoresEsperando = 0;
+    static op void escritorEsperando(int); static boolean contEscritorEscribiedo = false;
+
+    static{
+        send escritorEsperando(0); //pivote para que empiece primero un escritor
+    }
+
+    static process escribir((int i = 0; i<cantE; i++)){
+        int mensaje;
+        while(true){
+            receive escritorEsperando(mensaje);
+                contEscritorEscribiedo = true;
+                file = (int)Math.random()*50;
+                System.out.println("Escritor "+i+" escribe "+file+" en el archivo");
+                contEscritorEscribiedo = false;
+            if(contLectoresEsperando>0){
+                for(int j = 0; j<contLectoresEsperando; j++){
+                    send lectoresEsperando(0);
+                }
+            }else{send escritorEsperando(0);}
+        }
+    }
+
+    static process leer((int i = 0; i<cantL; i++)){
+        int mensaje;
+        while(true){
+            contLectoresEsperando++;
+            receive lectoresEsperando(mensaje);
+            contLectoresEsperando--;
+            System.out.println("Lector "+i+" lee "+file+" del archivo");
+            if(contLectoresEsperando==0 & !contEscritorEscribiedo){
+                send escritorEsperando(0);
+            }else{
+                send lectoresEsperando(0);
+            }
+
+        }
+    }
+
+    public static void main(String ... args){}
+
+}

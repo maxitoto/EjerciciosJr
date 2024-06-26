@@ -1,0 +1,22 @@
+import java.util.concurrent.ThreadLocalRandom;
+public class prog {
+    static final int p = 25;
+
+    static op void mutex(String);
+
+    static{
+        for(int i=0; i<1; i++){
+            send mutex("");
+        }
+    }
+    
+    static process proceos((int i = 0; i<p; i++;)){
+            String signal;
+            receive mutex(signal);
+            System.out.println("P"+i+" Esta en la seccion critica");
+            send mutex(signal);
+    }
+
+
+    public static void main(String... args){}
+}
