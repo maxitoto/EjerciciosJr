@@ -1,0 +1,53 @@
+//lectores escritores normal
+
+
+import edu.ucdavis.jr.JR;
+
+public class ReadWrite{
+
+    private static ReaderWriterMonitor access = new ReaderWriterMonitor("Monitor lector y escritor");
+
+    
+
+    private static process reader((int i = 0 ; i < 50; i++)) {
+        
+
+        access.start_read();
+        
+        System.out.println("El proceso " + i  + " lee");
+        access.end_read();
+        
+
+    }
+
+    private static process writer((int i = 0; i < 50 ; i++)) {
+ 
+        access.write(i);
+        
+    }
+
+    private static op void done() {
+
+        System.out.println("fin");
+
+    }
+    
+    private static op void pausa(int tiempo){
+
+        try{
+            Thread.sleep(tiempo);
+        }catch(java.lang.Exception e){}
+
+    }
+
+    public static void main(String[] args){
+
+        try {
+            JR.registerQuiescenceAction(done);
+        } catch (edu.ucdavis.jr.QuiescenceRegistrationException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+}

@@ -1,0 +1,88 @@
+import edu.ucdavis.jr.JR;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Random;
+
+public class Pizzeria{
+
+    private static int cantidad_pizzas = 0;
+
+    private static Set<String> pizza = new HashSet<String>();
+    private static Set<String> ingredientes = new HashSet<String>();
+
+    private static PizzeriaMonitor pizzeria = new PizzeriaMonitor("Monitor que gestiona el workflow de la pizzeria");
+
+    private static process chef{
+
+        ingredientes.add("salsa");
+        ingredientes.add("queso");
+        ingredientes.add("morron");
+
+        String[] array = ingredientes.toArray(new String[0]);
+
+        while (true) {
+            Random rand = new Random();
+            int randomIndex = rand.nextInt(array.length);
+            pizza.add(array[randomIndex]);
+            pizza.add(array[(randomIndex + 1) % array.length]);
+
+            if (!pizza.contains("queso")) {
+                System.out.println("falta queso");
+                pizzeria.solicitar_ingrediente("queso");
+            } else if (!pizza.contains("salsa")) {
+                System.out.println("falta salsa");
+                pizzeria.solicitar_ingrediente("salsa");
+            } else {
+                System.out.println("falta morron");
+                pizzeria.solicitar_ingrediente("morron");
+            }
+            pizza.clear();
+            cantidad_pizzas++;
+            System.out.println("Cantidad de pizzas listas " + cantidad_pizzas);
+        }
+        
+    }
+
+
+    private static process ayudante_queso {
+        while (true) {
+            pizzeria.preparar_ingrediente("queso");
+            System.out.println("El ayudante puso un queso");
+        }
+    }
+
+    private static process ayudante_salsa {
+
+        while (true) {
+            pizzeria.preparar_ingrediente("salsa");
+            System.out.println("El ayudante puso una salsa");
+        }
+    }
+    private static process ayudante_morron{
+
+        while (true) {
+            pizzeria.preparar_ingrediente("morron");
+            System.out.println("El ayudante puso un morron");
+        }
+    }
+
+    
+
+
+    private static op void done() {
+
+        System.out.println("");
+
+    }
+
+    public static void main(String[] args){
+
+        try {
+            JR.registerQuiescenceAction(done);
+        } catch (edu.ucdavis.jr.QuiescenceRegistrationException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+}

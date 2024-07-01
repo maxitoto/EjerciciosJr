@@ -1,0 +1,54 @@
+import edu.ucdavis.jr.JR;
+
+public class Main{
+
+    private static int procesos_completados = 0;
+
+    private static Despachador despachador = new Despachador("despachador");
+
+    private static process cpu_uno {
+        while (true) {
+            despachador.asignar_proceso(1);
+            //proceso en running
+            System.out.println("a");
+            despachador.terminar_proceso(1);
+        }
+    }
+
+    private static process cpu_dos {
+        while (true) {
+            despachador.asignar_proceso(2);
+            //proceso en running
+            System.out.println("b");
+            despachador.terminar_proceso(2);
+        }
+    }
+
+    private static process procesos((int i = 0; i < 500; i++)) {
+        while (true) {
+            despachador.adquirir_cpu();
+
+            despachador.get_procesos_asignados();
+        }
+        
+    }
+
+
+
+    private static op void done() {
+
+        System.out.println("");
+
+    }
+
+    public static void main(String[] args){
+
+        try {
+            JR.registerQuiescenceAction(done);
+        } catch (edu.ucdavis.jr.QuiescenceRegistrationException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+}

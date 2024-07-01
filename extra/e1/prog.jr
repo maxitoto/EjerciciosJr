@@ -1,0 +1,21 @@
+public class prog{
+    static Monitor monitor = new Monitor("LyR");
+
+    static final int aN = 5;
+    static final int aS = 15;
+
+    static process deNorteASur((int i = 0; i<aN; i++)){
+        monitor.cruzarNS();
+        System.out.println("Auto "+i+" cruza hacia el sur");
+        monitor.terminoNS();
+    }
+
+    static process deSurANorte((int i = 0; i<aS; i++)){
+        monitor.cruzarSN();
+        System.out.println("Auto "+i+" cruza hacia el norte");
+        monitor.terminoSN();
+    }
+
+    public static void main(String... args){}
+
+}

@@ -1,15 +1,22 @@
 public class prog{
     static Monitor monitor = new Monitor("LyR");
 
+    static op void cruzar(int t){
+        try{Thread.sleep((int)Math.random()*t);
+        }catch(Exception e){}
+    }
+
     static process autocruzaNorteAsur((int i =0; i<20; i++)){
-        monitor.cruzar(0);
-        System.out.println("auto "+i+" cruza desde el norte hacia el sur");
-        monitor.liberar(0);
+        monitor.entradaLadoNorte();
+        System.out.println("El auto "+i+" cruza desde el norte hacia el sur");
+        cruzar(2500);
+        monitor.salidaLadoNorte();
     }
     static process autocruzaSurAnorte((int i =0; i<10; i++)){
-        monitor.cruzar(1);
-        System.out.println("auto "+i+" cruza desde el sur hacia el norte");
-        monitor.liberar(1);
+        monitor.entradaLadoSur();
+        System.out.println("El auto "+i+" cruza desde el sur hacia el norte");
+        cruzar(2500);
+        monitor.salidaLadoSur();
     }
 
     public static void main(String... args){}

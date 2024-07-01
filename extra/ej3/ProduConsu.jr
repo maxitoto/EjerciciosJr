@@ -1,0 +1,55 @@
+import edu.ucdavis.jr.JR;
+
+public class ProduConsu{
+
+    private static sem cmutex = 1; //sem para atomicidad de operaciones
+
+    private static final int N = 10;
+    private static sem empty = N; //buffer de 10
+    private static sem full = 0;
+    private static int data = 0;
+    private static int[] buffer = new int[N];
+
+    private static int rear = 0;
+    private static int front = 0;
+
+    private static process produce {
+        P(cmutex);
+
+        P(empty);       
+        data++; //produce 
+        buffer[rear] = data;
+        
+        rear = (rear + 1) % N;
+        V(full);
+
+        V(cmutex);
+    }
+
+    private static process consum {
+        P(cmutex);
+
+        P(full);
+        front = (front + 1) % N;
+        V(empty);
+
+        V(cmutex);
+    }
+
+    private static op void done() {
+
+        System.out.println("");
+
+    }
+
+    public static void main(String[] args){
+
+        try {
+            JR.registerQuiescenceAction(done);
+        } catch (edu.ucdavis.jr.QuiescenceRegistrationException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+}

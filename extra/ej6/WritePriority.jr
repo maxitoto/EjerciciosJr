@@ -1,0 +1,35 @@
+import edu.ucdavis.jr.JR;
+
+public class WritePriority{
+
+    private static WritePriorityMonitor monitor_access = new WritePriorityMonitor("Monitor prioridad escritor");
+
+    private static process reader((int i = 0 ; i < 50 ; i++)) {
+        monitor_access.request_read();
+        System.out.println("El lector " + i + " pudo leer");
+        monitor_access.release_read();
+    }
+
+    private static process writer((int i = 0; i < 40 ; i++)){
+        monitor_access.request_write();
+        System.out.println("El escritor" + i + " pudo escribir");
+        monitor_access.release_read();
+    }
+
+    private static op void done() {
+
+        System.out.println("");
+
+    }
+
+    public static void main(String[] args){
+
+        try {
+            JR.registerQuiescenceAction(done);
+        } catch (edu.ucdavis.jr.QuiescenceRegistrationException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+}

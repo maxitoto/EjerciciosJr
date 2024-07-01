@@ -1,0 +1,19 @@
+public class prog {
+    private static final int N = 10; // Numero de vehiculos
+
+    private static Puente puente = new Puente("Monitor Puente"); // El monitor
+
+    public static void main(String... args) {}
+
+    // Proceso para un vehiculo del lado A
+    private static process VehiculoLadoA((int i = 0; i < N; i++)) {
+        puente.entrar_lado_A();
+        puente.salir();
+    }
+
+    // Proceso para un vehiculo del lado B
+    private static process VehiculoLadoB((int i = 0; i < N; i++)) {
+        puente.entrar_lado_B();
+        puente.salir();
+    }
+}
