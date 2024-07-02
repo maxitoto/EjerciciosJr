@@ -43,16 +43,16 @@ class Monitor extends java.lang.Object {
             op_m_mutex_voidTovoid.send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler)null, (java.lang.Object [])null);
         }
     }
-    static final int N = 5;
-    private int esperandoEnElNorte = 0;
-    private int autosPasanNorte = 0;
-    private int esperandoEnElSur = 0;
-    private int autosPasanSur = 0;
-    private boolean turno = true;
-    private m_condvar seaTurnoNorte = new m_condvar("seaTurnoNorte");
-    private m_condvar seaTurnoSur = new m_condvar("seaTurnoSur");
+    static boolean[] consultorios = {true, true, true};
+    private int pacientesEsperando = 0;
+    private boolean noMeLlamen = true;
+    private boolean noAsignenPaciente = true;
+    private m_condvar hayaclientesOconsultorioDisponible = new m_condvar("hayaclientesOconsultorioDisponible");
+    private m_condvar serLlamado = new m_condvar("serLlamado");
+    private m_condvar serAtendido = new m_condvar("serAtendido");
+    private m_condvar asignenPaciente = new m_condvar("asignenPaciente");
     
-    public void cruzarLadoNorte() {
+    public void formarse() {
         Op_ext.JRProxyOp op_m_return_from_wait_voidTovoid = null;
         try{
             op_m_return_from_wait_voidTovoid = new Op_ext_.JRProxyOp(new InOp_ext_impl());
@@ -67,10 +67,12 @@ class Monitor extends java.lang.Object {
                 recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
         }
         // Begin Expr2
-        esperandoEnElNorte++;
-        JRLoop4: while (!turno || (autosPasanNorte == N)) {
+        pacientesEsperando++;
+        JRLoop4: while (noMeLlamen) {
+            // Begin Expr2
+            System.out.println("Cliente esperando");
             {
-                m_condvar m_cv = (seaTurnoNorte);
+                m_condvar m_cv = (serLlamado);
                 m_cv.JRget_op_m_wait_Cap_voidTovoidXintTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler) null, new java.lang.Object [] {new Cap_ext_(op_m_return_from_wait_voidTovoid), 0});
                 m_cv.JRget_op_m_wait_ranks_intTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler) null, new java.lang.Object [] {0});
                 // Begin Expr2
@@ -92,14 +94,12 @@ class Monitor extends java.lang.Object {
             }
         }
         // Begin Expr2
-        esperandoEnElNorte--;
-        // Begin Expr2
-        autosPasanNorte++;
+        pacientesEsperando--;
         // Begin Expr2
         m_next();
     }
     
-    public void cruzarLadoSur() {
+    public int asignarPacienteAConsultorio() {
         Op_ext.JRProxyOp op_m_return_from_wait_voidTovoid = null;
         try{
             op_m_return_from_wait_voidTovoid = new Op_ext_.JRProxyOp(new InOp_ext_impl());
@@ -113,11 +113,101 @@ class Monitor extends java.lang.Object {
             if (recv_voidTovoid.retOp != null)
                 recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
         }
-        // Begin Expr2
-        esperandoEnElSur++;
-        JRLoop5: while (turno || (autosPasanSur == N)) {
+        boolean consultorioNoDiponible = true;
+        int numeroConsultorioDiponible = -1;
+        JRLoop5: for (int i = 0; i < 3; i++) {
+            if (consultorios[i]) {
+                // Begin Expr2
+                consultorioNoDiponible = true;
+                // Begin Expr2
+                numeroConsultorioDiponible = i;
+                break JRLoop5;
+            } else {
+                // Begin Expr2
+                consultorioNoDiponible = false;
+                // Begin Expr2
+                numeroConsultorioDiponible = -1;
+            }
+        }
+        JRLoop7: while (pacientesEsperando == 0 || consultorioNoDiponible) {
             {
-                m_condvar m_cv = (seaTurnoSur);
+                m_condvar m_cv = (hayaclientesOconsultorioDisponible);
+                m_cv.JRget_op_m_wait_Cap_voidTovoidXintTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler) null, new java.lang.Object [] {new Cap_ext_(op_m_return_from_wait_voidTovoid), 0});
+                m_cv.JRget_op_m_wait_ranks_intTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler) null, new java.lang.Object [] {0});
+                // Begin Expr2
+                m_next();
+                {
+                    jrvm.sendAndDie();
+                    Recv_ext recv_voidTovoid = op_m_return_from_wait_voidTovoid.recv();
+                    jrvm.ariseAndReceive();
+                    if (recv_voidTovoid.retOp != null)
+                        recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
+                }
+                {
+                    jrvm.sendAndDie();
+                    Recv_ext recv_voidTovoid = op_m_mutex_voidTovoid.recv();
+                    jrvm.ariseAndReceive();
+                    if (recv_voidTovoid.retOp != null)
+                        recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
+                }
+            }
+            JRLoop6: for (int i = 0; i < 3; i++) {
+                if (consultorios[i]) {
+                    // Begin Expr2
+                    consultorioNoDiponible = true;
+                    // Begin Expr2
+                    numeroConsultorioDiponible = i;
+                    break JRLoop6;
+                } else {
+                    // Begin Expr2
+                    consultorioNoDiponible = false;
+                    // Begin Expr2
+                    numeroConsultorioDiponible = -1;
+                }
+            }
+        }
+        // Begin Expr2
+        System.out.println("le asigno a un cliente formado, un consultorio medico");
+        // Begin Expr2
+        consultorios[numeroConsultorioDiponible] = false;
+        // Begin Expr2
+        (new Cap_ext_((serLlamado).JRget_op_m_signal_voidToboolean(), "boolean")).call(jrvm.getTimestamp(), (java.lang.Object[]) null);
+        // Begin Expr2
+        noAsignenPaciente = false;
+        // Begin Expr2
+        (new Cap_ext_((asignenPaciente).JRget_op_m_signal_voidToboolean(), "boolean")).call(jrvm.getTimestamp(), (java.lang.Object[]) null);
+        {
+            if (true) {
+                // Begin Expr2
+                m_next();
+                // Return
+                return (numeroConsultorioDiponible);
+                // End Return
+
+            }
+        }
+        // Begin Expr2
+        m_next();
+        throw new RuntimeException("reached end of non-void _proc (Monitor.m, line 63) without executing a return");
+    }
+    
+    public void atender() {
+        Op_ext.JRProxyOp op_m_return_from_wait_voidTovoid = null;
+        try{
+            op_m_return_from_wait_voidTovoid = new Op_ext_.JRProxyOp(new InOp_ext_impl());
+        } catch (Exception e) { throw new jrRuntimeError("Cannot initialize op"); }
+        
+        
+        {
+            jrvm.sendAndDie();
+            Recv_ext recv_voidTovoid = op_m_mutex_voidTovoid.recv();
+            jrvm.ariseAndReceive();
+            if (recv_voidTovoid.retOp != null)
+                recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
+        }
+        JRLoop8: while (noAsignenPaciente) {
+            {
+                m_condvar m_cv = (asignenPaciente);
                 m_cv.JRget_op_m_wait_Cap_voidTovoidXintTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler) null, new java.lang.Object [] {new Cap_ext_(op_m_return_from_wait_voidTovoid), 0});
                 m_cv.JRget_op_m_wait_ranks_intTovoid().send(jrvm.getTimestamp(), (edu.ucdavis.jr.RemoteHandler) null, new java.lang.Object [] {0});
                 // Begin Expr2
@@ -139,14 +229,10 @@ class Monitor extends java.lang.Object {
             }
         }
         // Begin Expr2
-        esperandoEnElSur--;
-        // Begin Expr2
-        autosPasanSur++;
-        // Begin Expr2
         m_next();
     }
     
-    public void salidaLadoSur() {
+    public void liberarConsultorio(int consultorio) {
         Op_ext.JRProxyOp op_m_return_from_wait_voidTovoid = null;
         try{
             op_m_return_from_wait_voidTovoid = new Op_ext_.JRProxyOp(new InOp_ext_impl());
@@ -161,49 +247,7 @@ class Monitor extends java.lang.Object {
                 recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
         }
         // Begin Expr2
-        autosPasanNorte--;
-        if (autosPasanNorte == 0 & esperandoEnElSur == 0) {
-            // Begin Expr2
-            (new Cap_ext_((seaTurnoNorte).JRget_op_m_signal_all_voidTovoid(), "void")).call(jrvm.getTimestamp(), (java.lang.Object[]) null);
-        } else {
-            if (autosPasanNorte == 0 & esperandoEnElSur > 0) {
-                // Begin Expr2
-                turno = !turno;
-                // Begin Expr2
-                (new Cap_ext_((seaTurnoSur).JRget_op_m_signal_all_voidTovoid(), "void")).call(jrvm.getTimestamp(), (java.lang.Object[]) null);
-            }
-        }
-        // Begin Expr2
-        m_next();
-    }
-    
-    public void salidaLadoNorte() {
-        Op_ext.JRProxyOp op_m_return_from_wait_voidTovoid = null;
-        try{
-            op_m_return_from_wait_voidTovoid = new Op_ext_.JRProxyOp(new InOp_ext_impl());
-        } catch (Exception e) { throw new jrRuntimeError("Cannot initialize op"); }
-        
-        
-        {
-            jrvm.sendAndDie();
-            Recv_ext recv_voidTovoid = op_m_mutex_voidTovoid.recv();
-            jrvm.ariseAndReceive();
-            if (recv_voidTovoid.retOp != null)
-                recv_voidTovoid.retOp.send(jrvm.getTimestamp(), (java.lang.Object[]) null);
-        }
-        // Begin Expr2
-        autosPasanSur--;
-        if (autosPasanSur == 0 & esperandoEnElNorte == 0) {
-            // Begin Expr2
-            (new Cap_ext_((seaTurnoSur).JRget_op_m_signal_all_voidTovoid(), "void")).call(jrvm.getTimestamp(), (java.lang.Object[]) null);
-        } else {
-            if (autosPasanSur == 0 & esperandoEnElNorte > 0) {
-                // Begin Expr2
-                turno = !turno;
-                // Begin Expr2
-                (new Cap_ext_((seaTurnoNorte).JRget_op_m_signal_all_voidTovoid(), "void")).call(jrvm.getTimestamp(), (java.lang.Object[]) null);
-            }
-        }
+        consultorios[consultorio] = true;
         // Begin Expr2
         m_next();
     }

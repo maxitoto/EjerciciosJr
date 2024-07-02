@@ -1,0 +1,60 @@
+public class prog{
+    static final int espacio = 5;
+    static final int Autos = 55;
+
+    static op void espacioDisponible(String);
+    static op void puerta(String);
+
+    static int contp1 = 0;
+    static int contpb = 0;
+
+
+    static{
+        for(int i = 0; i<espacio*2; i++){
+            send espacioDisponible("");
+        }
+
+        send puerta("");
+    }
+
+
+    static op void espera(){
+        try{Thread.sleep(1000+(int)Math.random()*3000);}catch(Exception e){}
+    }
+    
+    static process auto((int i = 0; i<Autos; i++)){
+        String mensaje;
+        receive puerta(mensaje);
+                System.out.println("Auto "+i+" pasa por la puerta");
+        send puerta("");
+
+        receive espacioDisponible(mensaje);
+        if(contpb<espacio){
+            contpb++;
+            System.out.println("contpb= "+contpb+"contp1= "+contp1);
+            System.out.println("Auto "+i+" se estaciona");
+            espera();
+            contpb--;
+            System.out.println("Auto "+i+" se va");
+            send espacioDisponible("");
+        }else{
+                contp1++;
+                System.out.println("contpb= "+contpb+"contp1= "+contp1);
+                System.out.println("Auto "+i+" se estaciona");
+                espera();
+                contp1--;
+                System.out.println("Auto "+i+" se va");
+                send espacioDisponible("");
+        }
+    }
+
+    public static void main(String... args){}
+
+
+
+
+
+
+
+    
+}

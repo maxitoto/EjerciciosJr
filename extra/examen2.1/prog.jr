@@ -1,0 +1,10 @@
+
+public class prog{
+
+    static Monitor monitor = new Monitor("L&R");
+    static int consultorioUsado = -1;
+
+
+
+    public static void main(String ... args){}
+}

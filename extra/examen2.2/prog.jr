@@ -1,0 +1,42 @@
+public class prog{
+    static final int A = 27;
+    static final int N = 4;
+    static op void rampa(String);
+    static op void capacidadMaxima(String);
+    static op void autosesperando(String);
+
+    static{
+        send rampa("");
+    }
+
+    static process barcos((int i = 1; i<4; i++)){
+        String mensaje;
+        while(true){
+            receive rampa(mensaje);
+            System.out.println("Soy el barco "+i+" y obtuve la rampa");
+
+            for(int j = 0; j<N; j++){
+                send capacidadMaxima("");
+            }
+            System.out.println("Soy el barco "+i+" y espero que suban "+N+" para sarpar");
+            for(int k = 0; k<N; k++){
+                receive autosesperando(mensaje);
+                System.out.println(mensaje);
+            }
+
+            System.out.println("Ya subieron "+N+" Autos y salimos");
+
+            send rampa("libre");
+        }
+        
+    }
+
+    static process autos((int i = 0; i<A; i++)){
+        String mensaje;
+            receive capacidadMaxima(mensaje);
+            send autosesperando("auto "+i+" subio");
+    }
+
+
+    public static void main(String ... args){}
+}

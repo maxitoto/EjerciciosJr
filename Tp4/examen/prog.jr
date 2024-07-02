@@ -7,16 +7,16 @@ public class prog{
     }
 
     static process autocruzaNorteAsur((int i =0; i<20; i++)){
-        monitor.entradaLadoNorte();
+        monitor.cruzarLadoNorte();
         System.out.println("El auto "+i+" cruza desde el norte hacia el sur");
         cruzar(2500);
-        monitor.salidaLadoNorte();
+        monitor.salidaLadoSur();
     }
     static process autocruzaSurAnorte((int i =0; i<10; i++)){
-        monitor.entradaLadoSur();
+        monitor.cruzarLadoSur();
         System.out.println("El auto "+i+" cruza desde el sur hacia el norte");
         cruzar(2500);
-        monitor.salidaLadoSur();
+        monitor.salidaLadoNorte();
     }
 
     public static void main(String... args){}

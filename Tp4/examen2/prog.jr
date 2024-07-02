@@ -1,0 +1,77 @@
+public class prog{
+
+    static final int N = 20;
+    static op void despertar_dormir(String);
+    static op void confirmar_despegar(String);
+    static op void l1(String);
+    static op void l2(String);
+    static op void l3(String);
+    static op void mutex(String);
+    static int[] lineas = new int[3];
+
+    static{
+        send mutex("");
+    }
+    
+    static int maximo(int[] array) {
+        if (array == null || array.length == 0) {
+            throw new IllegalArgumentException("El array no puede estar vacio o ser null");
+        }
+
+        int maxIndex = 0;
+        for (int i = 1; i < array.length; i++) {
+            if (array[i] > array[maxIndex]) {
+                maxIndex = i;
+            }
+        }
+
+        return maxIndex;
+    }
+
+    static process Control{
+        String mensaje;
+        int lineaMasCongestionada;
+        while(true){
+            receive despertar_dormir(mensaje);
+
+            receive mutex(mensaje);
+            lineaMasCongestionada=maximo(lineas);
+            send mutex("");
+
+            switch(lineaMasCongestionada){
+                case 1:send l1(""); break;
+                case 2:send l2(""); break;
+                case 3:send l3(""); break;
+            }
+
+            receive confirmar_despegar(mensaje);
+        }
+    }
+
+    static process Avion((int i = 0; i<N; i++)){
+        String mensaje;
+
+        int linea = (int)Math.random()*3;
+
+        receive mutex(mensaje);
+            lineas[linea]++;
+        send mutex("");
+
+        send despertar_dormir("");
+
+        switch(linea){
+            case 1:receive l1(mensaje); break;
+            case 2:receive l2(mensaje); break;
+            case 3:receive l3(mensaje); break;
+        }
+
+        receive mutex(mensaje);
+            lineas[linea]--;
+        send mutex("");
+
+        send confirmar_despegar("");
+    }
+    
+
+    public static void main(String... args){}
+}

@@ -22,369 +22,166 @@ class Monitor {
       }
   }
 
-// Monitor.m, line 2:     static final int limite = 5;
+// Monitor.m, line 2:         static final int N = 5;
 
 static
 final
 int
-limite
+N
 =5;
 // Monitor.m, line 3: 
 
 
-// Monitor.m, line 4:     _var boolean turno = true;
+// Monitor.m, line 4:         _var int esperandoEnElNorte=0;
+
+private int
+esperandoEnElNorte
+=0;
+// Monitor.m, line 5:         _var int autosPasanNorte=0;
+
+private int
+autosPasanNorte
+=0;
+// Monitor.m, line 6:         _var int esperandoEnElSur=0;
+
+private int
+esperandoEnElSur
+=0;
+// Monitor.m, line 7:         _var int autosPasanSur=0;
+
+private int
+autosPasanSur
+=0;
+// Monitor.m, line 8: 
+
+
+// Monitor.m, line 9:         _var boolean turno=true;
 
 private boolean
 turno
 =true
 ;
-// Monitor.m, line 5:     _var int NautosPasanS = 0;
-
-private int
-NautosPasanS
-=0;
-// Monitor.m, line 6:     _var int SautosPasanN = 0;
-
-private int
-SautosPasanN
-=0;
-// Monitor.m, line 7: 
+// Monitor.m, line 10: 
 
 
-// Monitor.m, line 8:     _var int esperandoLadoNorte, esperandoLadoSur = 0;
-
-private int
-esperandoLadoNorte
-,esperandoLadoSur
-=0;
-// Monitor.m, line 9: 
+// Monitor.m, line 11:         _condvar seaTurnoNorte;
 
 
-// Monitor.m, line 10:     _condvar turnoSur;
+// Monitor.m, line 12:         _condvar seaTurnoSur;
+
+private m_condvar seaTurnoNorte = new m_condvar("seaTurnoNorte");
+
+// Monitor.m, line 13: 
 
 
-// Monitor.m, line 11:     _condvar turnoNorte;
-
-private m_condvar turnoSur = new m_condvar("turnoSur");
-
-// Monitor.m, line 12: 
+// Monitor.m, line 14: 
 
 
-// Monitor.m, line 13:     _proc void entradaLadoNorte(){
+// Monitor.m, line 15: 
 
-private m_condvar turnoNorte = new m_condvar("turnoNorte");
+
+// Monitor.m, line 16:         _proc void cruzarLadoNorte(){
+
+private m_condvar seaTurnoSur = new m_condvar("seaTurnoSur");
 public
 void
-entradaLadoNorte
+cruzarLadoNorte
 (){
     op void m_return_from_wait();
     P(m_mutex);
 
-// Monitor.m, line 14:         while(!turno){
+// Monitor.m, line 17:             esperandoEnElNorte++;
+
+esperandoEnElNorte
+++;
+// Monitor.m, line 18:             while(!turno || (autosPasanNorte==N)){
 
 while
 (!turno
-){
-// Monitor.m, line 15:             esperandoLadoNorte++;
+||(autosPasanNorte
+==N
+)){
+// Monitor.m, line 19:                 _wait(seaTurnoNorte);
 
-esperandoLadoNorte
-++;
-// Monitor.m, line 16:             _wait(turnoNorte);
-
-{  m_condvar m_cv = (turnoNorte );
+{  m_condvar m_cv = (seaTurnoNorte );
   send m_cv.m_wait(m_return_from_wait,0);
   send m_cv.m_wait_ranks(0);
   m_next();
   P(m_return_from_wait);
   P(m_mutex);
 }
-// Monitor.m, line 17:             esperandoLadoNorte--;
+// Monitor.m, line 20:             }
 
-esperandoLadoNorte
+
+// Monitor.m, line 21:             esperandoEnElNorte--;
+
+}esperandoEnElNorte
 --;
-// Monitor.m, line 18:         }
+// Monitor.m, line 22: 
 
 
-// Monitor.m, line 19: 
+// Monitor.m, line 23:             autosPasanNorte++;
 
-
-// Monitor.m, line 20:         while(NautosPasanS>=limite){
-
-}while
-(NautosPasanS
->=limite
-){
-// Monitor.m, line 21:             esperandoLadoNorte++;
-
-esperandoLadoNorte
+autosPasanNorte
 ++;
-// Monitor.m, line 22:             _wait(turnoNorte);
-
-{  m_condvar m_cv = (turnoNorte );
-  send m_cv.m_wait(m_return_from_wait,0);
-  send m_cv.m_wait_ranks(0);
-  m_next();
-  P(m_return_from_wait);
-  P(m_mutex);
-}
-// Monitor.m, line 23:             esperandoLadoNorte--;
-
-esperandoLadoNorte
---;
 // Monitor.m, line 24:         }
 
 
 // Monitor.m, line 25: 
 
 
-// Monitor.m, line 26:         NautosPasanS++;
+// Monitor.m, line 26:         _proc void cruzarLadoSur(){
 
-}NautosPasanS
+  m_next();
+}
+public
+void
+cruzarLadoSur
+(){
+    op void m_return_from_wait();
+    P(m_mutex);
+
+// Monitor.m, line 27:             esperandoEnElSur++;
+
+esperandoEnElSur
 ++;
-// Monitor.m, line 27:     }
-
-
-// Monitor.m, line 28: 
-
-
-// Monitor.m, line 29: 
-
-
-// Monitor.m, line 30: 
-
-
-// Monitor.m, line 31:     _proc void salidaLadoNorte(){
-
-  m_next();
-}
-public
-void
-salidaLadoNorte
-(){
-    op void m_return_from_wait();
-    P(m_mutex);
-
-// Monitor.m, line 32:         if(turno & esperandoLadoSur==0){//si del otro lado no hay nadie, entonces despierto a todos de este lado.
-
-if
-(turno
-&esperandoLadoSur
-==0){
-// Monitor.m, line 33:             NautosPasanS=(esperandoLadoNorte*-1)+limite;//voy por debajo del limite para cuando pase el ultimo auto por el while, recien ahi NautosPasanS sea igual a limite.
-
-NautosPasanS
-=(esperandoLadoNorte
-*-1)+limite
-;
-// Monitor.m, line 34:             System.out.println("Desde el norte no veo a nadie en el sur, entonces pasamos todos");
-
-System
-.out
-.println
-("Desde el norte no veo a nadie en el sur, entonces pasamos todos");
-// Monitor.m, line 35:             _signal_all(turnoNorte);
-
-(turnoNorte ).m_signal_all();
-
-// Monitor.m, line 36:         }else{
-
-}else
-{
-// Monitor.m, line 37:             if(turno & esperandoLadoSur>0 & NautosPasanS>=limite){//despierto 5 "al mismo tiempo" del otro lado, no hay o no 5 no importa.
-
-if
-(turno
-&esperandoLadoSur
->0&NautosPasanS
->=limite
-){
-// Monitor.m, line 38:                 SautosPasanN=0;
-
-SautosPasanN
-=0;
-// Monitor.m, line 39:                 NautosPasanS=0;//reset para proxima vuelta del otro lado, si es que ocurre.
-
-NautosPasanS
-=0;
-// Monitor.m, line 40:                 turno=!turno;
-
-turno
-=!turno
-;
-// Monitor.m, line 41:                 System.out.println("ya pasamos "+limite+" autos hacia el sur, es el turno de los autos del sur");
-
-System
-.out
-.println
-("ya pasamos "+limite
-+" autos hacia el sur, es el turno de los autos del sur");
-// Monitor.m, line 42:                 for(int i = 0; i<limite; i++){
-
-for
-(int
-i
-=0;i
-<limite
-;i
-++){
-// Monitor.m, line 43:                     _signal(turnoSur);
-
-(turnoSur ).m_signal();
-
-// Monitor.m, line 44:                 }
-
-
-// Monitor.m, line 45:             }else{
-
-}}else
-{
-// Monitor.m, line 46:                 if(turno & esperandoLadoNorte==0 & NautosPasanS<limite){//si ya no queda nadie de este lado y no llegamos al limite, sedo el turno
-
-if
-(turno
-&esperandoLadoNorte
-==0&NautosPasanS
-<limite
-){
-// Monitor.m, line 47:                 SautosPasanN=0;
-
-SautosPasanN
-=0;
-// Monitor.m, line 48:                 NautosPasanS=0;
-
-NautosPasanS
-=0;
-// Monitor.m, line 49:                 turno=!turno;
-
-turno
-=!turno
-;
-// Monitor.m, line 50:                 System.out.println("Nadie espera de este lado(Norte) y pasamos menos de "+limite);
-
-System
-.out
-.println
-("Nadie espera de este lado(Norte) y pasamos menos de "+limite
-);
-// Monitor.m, line 51:                     for(int i = 0; i<limite; i++){//si se pierden signals porque hay menos de 5 esperando del otro lado, no importa
-
-for
-(int
-i
-=0;i
-<limite
-;i
-++){
-// Monitor.m, line 52:                         _signal(turnoSur);
-
-(turnoSur ).m_signal();
-
-// Monitor.m, line 53:                     }
-
-
-// Monitor.m, line 54:                 }
-
-}
-// Monitor.m, line 55:             }    
-
-}
-// Monitor.m, line 56:         }
-
-}
-// Monitor.m, line 57:     }
-
-}
-// Monitor.m, line 58:     
-
-
-// Monitor.m, line 59: 
-
-
-// Monitor.m, line 60: 
-
-
-// Monitor.m, line 61:     _proc void entradaLadoSur(){
-
-  m_next();
-}
-public
-void
-entradaLadoSur
-(){
-    op void m_return_from_wait();
-    P(m_mutex);
-
-// Monitor.m, line 62:         while(turno){
+// Monitor.m, line 28:             while(turno || (autosPasanSur==N)){
 
 while
 (turno
-){
-// Monitor.m, line 63:             esperandoLadoSur++;
+||(autosPasanSur
+==N
+)){
+// Monitor.m, line 29:                 _wait(seaTurnoSur);
 
-esperandoLadoSur
-++;
-// Monitor.m, line 64:             _wait(turnoSur);
-
-{  m_condvar m_cv = (turnoSur );
+{  m_condvar m_cv = (seaTurnoSur );
   send m_cv.m_wait(m_return_from_wait,0);
   send m_cv.m_wait_ranks(0);
   m_next();
   P(m_return_from_wait);
   P(m_mutex);
 }
-// Monitor.m, line 65:             esperandoLadoSur--;
+// Monitor.m, line 30:             }
 
-esperandoLadoSur
+
+// Monitor.m, line 31:             esperandoEnElSur--;
+
+}esperandoEnElSur
 --;
-// Monitor.m, line 66:         }
+// Monitor.m, line 32: 
 
 
-// Monitor.m, line 67: 
+// Monitor.m, line 33:             autosPasanSur++;
 
-
-// Monitor.m, line 68:         while(SautosPasanN>=limite){
-
-}while
-(SautosPasanN
->=limite
-){
-// Monitor.m, line 69:             esperandoLadoSur++;
-
-esperandoLadoSur
+autosPasanSur
 ++;
-// Monitor.m, line 70:             _wait(turnoSur);
-
-{  m_condvar m_cv = (turnoSur );
-  send m_cv.m_wait(m_return_from_wait,0);
-  send m_cv.m_wait_ranks(0);
-  m_next();
-  P(m_return_from_wait);
-  P(m_mutex);
-}
-// Monitor.m, line 71:             esperandoLadoSur--;
-
-esperandoLadoSur
---;
-// Monitor.m, line 72:         }
+// Monitor.m, line 34:         }
 
 
-// Monitor.m, line 73: 
+// Monitor.m, line 35: 
 
 
-// Monitor.m, line 74:         SautosPasanN++;
-
-}SautosPasanN
-++;
-// Monitor.m, line 75:     }
-
-
-// Monitor.m, line 76: 
-
-
-// Monitor.m, line 77: 
-
-
-// Monitor.m, line 78:     _proc void salidaLadoSur(){
+// Monitor.m, line 36:         _proc void salidaLadoSur(){
 
   m_next();
 }
@@ -395,141 +192,97 @@ salidaLadoSur
     op void m_return_from_wait();
     P(m_mutex);
 
-// Monitor.m, line 79:         if(!turno & esperandoLadoNorte==0){
+// Monitor.m, line 37:             autosPasanNorte--;
+
+autosPasanNorte
+--;
+// Monitor.m, line 38:             if(autosPasanNorte==0 & esperandoEnElSur==0){
 
 if
-(!turno
-&esperandoLadoNorte
+(autosPasanNorte
+==0&esperandoEnElSur
 ==0){
-// Monitor.m, line 80:             SautosPasanN=(esperandoLadoSur*-1)+limite;
+// Monitor.m, line 39:                 _signal_all(seaTurnoNorte);
 
-SautosPasanN
-=(esperandoLadoSur
-*-1)+limite
-;
-// Monitor.m, line 81:             System.out.println("Desde el sur no veo a nadie en el norte, entonces pasamos todos");
+(seaTurnoNorte ).m_signal_all();
 
-System
-.out
-.println
-("Desde el sur no veo a nadie en el norte, entonces pasamos todos");
-// Monitor.m, line 82:             _signal_all(turnoSur);
-
-(turnoSur ).m_signal_all();
-
-// Monitor.m, line 83:         }else{
+// Monitor.m, line 40:             }else{if(autosPasanNorte==0 & esperandoEnElSur>0){turno=!turno;_signal_all(seaTurnoSur);}}
 
 }else
-{
-// Monitor.m, line 84:                 if(!turno & esperandoLadoNorte>0 & SautosPasanN>=limite){
+{if
+(autosPasanNorte
+==0&esperandoEnElSur
+>0){turno
+=!turno
+;(seaTurnoSur ).m_signal_all();
+}
+// Monitor.m, line 41:         }
+
+}
+// Monitor.m, line 42:         
+
+
+// Monitor.m, line 43: 
+
+
+// Monitor.m, line 44:         _proc void salidaLadoNorte(){
+
+  m_next();
+}
+public
+void
+salidaLadoNorte
+(){
+    op void m_return_from_wait();
+    P(m_mutex);
+
+// Monitor.m, line 45:             autosPasanSur--;
+
+autosPasanSur
+--;
+// Monitor.m, line 46:             if(autosPasanSur==0 & esperandoEnElNorte==0){
 
 if
-(!turno
-&esperandoLadoNorte
->0&SautosPasanN
->=limite
-){
-// Monitor.m, line 85:                     NautosPasanS=0;
+(autosPasanSur
+==0&esperandoEnElNorte
+==0){
+// Monitor.m, line 47:                 _signal_all(seaTurnoSur);
 
-NautosPasanS
-=0;
-// Monitor.m, line 86:                     SautosPasanN=0;
+(seaTurnoSur ).m_signal_all();
 
-SautosPasanN
-=0;
-// Monitor.m, line 87:                     turno=!turno;
+// Monitor.m, line 48:             }else{if(autosPasanSur==0 & esperandoEnElNorte>0){turno=!turno; _signal_all(seaTurnoNorte);}}
 
-turno
+}else
+{if
+(autosPasanSur
+==0&esperandoEnElNorte
+>0){turno
 =!turno
-;
-// Monitor.m, line 88:                     System.out.println("ya pasamos "+limite+" autos hacia el norte, es el turno de los autos del norte");
-
-System
-.out
-.println
-("ya pasamos "+limite
-+" autos hacia el norte, es el turno de los autos del norte");
-// Monitor.m, line 89:                     for(int i = 0; i<limite; i++){
-
-for
-(int
-i
-=0;i
-<limite
-;i
-++){
-// Monitor.m, line 90:                         _signal(turnoNorte);
-
-(turnoNorte ).m_signal();
-
-// Monitor.m, line 91:                     }
-
-
-// Monitor.m, line 92:                 }else{
-
-}}else
-{
-// Monitor.m, line 93:                         if(!turno & esperandoLadoSur==0 & SautosPasanN<limite){//si ya no queda nadie de este lado y no llegamos al limite, sedo el turno
-
-if
-(!turno
-&esperandoLadoSur
-==0&SautosPasanN
-<limite
-){
-// Monitor.m, line 94:                             NautosPasanS=0;
-
-NautosPasanS
-=0;
-// Monitor.m, line 95:                             SautosPasanN=0;
-
-SautosPasanN
-=0;
-// Monitor.m, line 96:                             turno=!turno;
-
-turno
-=!turno
-;
-// Monitor.m, line 97:                             System.out.println("Nadie espera de este lado(sur) y pasamos menos de "+limite);
-
-System
-.out
-.println
-("Nadie espera de este lado(sur) y pasamos menos de "+limite
-);
-// Monitor.m, line 98:                             _signal_all(turnoNorte);
-
-(turnoNorte ).m_signal_all();
-
-// Monitor.m, line 99:                         }
-
-
-// Monitor.m, line 100:                     }
+;(seaTurnoNorte ).m_signal_all();
+}
+// Monitor.m, line 49:         }
 
 }
-// Monitor.m, line 101:                            
+// Monitor.m, line 50: 
 
 
-// Monitor.m, line 102:             }
-
-}
-// Monitor.m, line 103:     }
-
-}
-// Monitor.m, line 104: }
+// Monitor.m, line 51: }
 
   m_next();
 }
 
-// Monitor.m, line 105:     
+// Monitor.m, line 52: 
 
 
-// Monitor.m, line 106: 
+// Monitor.m, line 53:     
 
 
-// Monitor.m, line 107: 
+// Monitor.m, line 54: 
 
 
-// Monitor.m, line 108: 
+// Monitor.m, line 55: 
+
+
+// Monitor.m, line 56: 
 
 }
